@@ -12,9 +12,8 @@ module Neuron196_L2_tb(
     input [7:0] LFSR2_seed,
 
     output [7:0] result_bin,
-    output [7:0] macc_result_bin,    // debug wire
-    output [7:0] bias_out_bin,
-    output result_stoch,
+    output [7:0] macc_result_bin,   // debug
+    output [7:0] bias_out_bin,      // debug
     output done
     );
 
@@ -27,32 +26,33 @@ module Neuron196_L2_tb(
 
     // Stochastic outputs
     wire neur_result_stoch;
-    wire macc_result_stoch;
+    wire macc_out_stoch;
     wire bias_out_stoch;
 
-    // Generate stoachastic inputs, weights
+    // Generate stochastic inputs
     genvar i;
     generate
-        for (i=0; i<8; i=i+1) begin
+        for (i=0; i<NUM_INPS; i=i+1) begin
             StochNumGen SNG_inps(
-                .clk                (clk),
-                .reset              (reset),
-                .seed               (8'd134),               // Using set seeds as better outputs.
-                .prob               (input_data_bin[i]),
-                .stoch_num          (inps_stoch[i])
+                .clk            (clk),
+                .reset          (reset),
+                .seed           (LFSR1_seed),
+                .prob           (input_data_bin[i]),
+                .stoch_num      (inps_stoch[i])
             );
         end
     endgenerate
 
+    // Generate stochastic weights
     generate
-        for (i=0; i<8; i=i+1) begin
-            StochNumGen SNG_wghts(
-                    .clk                (clk),
-                    .reset              (reset),
-                    .seed               (8'd104),
-                    .prob               (weights_bin[i]),
-                    .stoch_num          (wghts_stoch[i])
-                );
+        for (i=0; i<NUM_INPS; i=i+1) begin
+            StochNumGen SNG_weights(
+                .clk            (clk),
+                .reset          (reset),
+                .seed           (LFSR2_seed),
+                .prob           (weights_bin[i]),
+                .stoch_num      (weights_stoch[i])
+            );
         end
     endgenerate
 
@@ -66,19 +66,20 @@ module Neuron196_L2_tb(
     );
 
     // Neuron
-    Neuron8 neur(
+    Neuron196_L2 neur_L2(
         .clk                (clk),
         .reset              (reset),
         .input_data         (inps_stoch),
-        .weights            (wghts_stoch),
+        .weights            (weights_stoch),
         .bias               (bias_stoch),
-        .result             (neur_result_stoch),
-        .macc_result        (macc_result_stoch),
-        .bias_out           (bias_out_stoch)
+
+        .macc_out           (macc_out_stoch),
+        .bias_out           (bias_out_stoch),
+        .result             (neur_result_stoch)
     );
 
     // STB output
-    StochToBin stb(
+    StochToBin STB(
         .clk                (clk),
         .reset              (reset),
         .bit_stream         (neur_result_stoch),
@@ -90,7 +91,7 @@ module Neuron196_L2_tb(
     StochToBin stb_macc(
         .clk                (clk),
         .reset              (reset),
-        .bit_stream         (macc_result_stoch),
+        .bit_stream         (macc_out_stoch),
         .bin_number         (macc_result_bin)
     );
 
@@ -101,7 +102,5 @@ module Neuron196_L2_tb(
         .bit_stream         (bias_out_stoch),
         .bin_number         (bias_out_bin)
     );
-
-    assign result_stoch = neur_result_stoch;
 
 endmodule

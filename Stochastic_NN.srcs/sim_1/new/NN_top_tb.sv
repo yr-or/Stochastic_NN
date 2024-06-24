@@ -50,6 +50,7 @@ module NN_top_tb();
     integer fd; // file object
 
     // Apply test data in order, change LFSR seed each time to test
+    // Total time = 41200*NUM_TESTS + 10 = ~41us
     initial begin
         fd = $fopen("NN_test.txt", "w");
         reset = 1;
@@ -65,7 +66,11 @@ module NN_top_tb();
             reset = 0;
 
             // Wait 256 clock cycles + 10 clk cycles for max module
-            #5100;
+            //#5100;
+            //#200;
+
+            // Wait 2048 clk cycles + 10 for max module
+            #40960;
             #200;
 
             // print results

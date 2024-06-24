@@ -21,7 +21,7 @@ module Max (
     genvar i;
     generate
         for (i=0; i<NUM_INP; i=i+1) begin
-                StochToBin stb(
+                StochToBin #(.BITSTR_LEN(2048)) stb(
                     .clk                (clk),
                     .reset              (reset),
                     .enable             (en_stb),

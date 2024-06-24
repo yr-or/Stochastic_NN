@@ -24,7 +24,7 @@ module StochToBin #(parameter BITSTR_LEN=256) (
             // enable logic, if enable, do stuff, otherwise do nothing
             if (enable) begin
                 // 256 clk cycles
-                if (clk_count < BITSTR_LEN) begin
+                if (clk_count < BITSTR_LEN-1) begin
                     ones_count <= ones_count + bit_stream;
                     clk_count <= clk_count + 1;
                 end else begin

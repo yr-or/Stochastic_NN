@@ -62,6 +62,7 @@ module Layer2_tb(
             StochToBin stb_L2_res(
                 .clk                (clk),
                 .reset              (reset),
+                .enable             (1),
                 .bit_stream         (L2_out_stoch[j]),
                 .bin_number         (L2_out_bin[j]),
                 .done               (done_stb_res_L2[j])
@@ -76,6 +77,7 @@ module Layer2_tb(
             StochToBin stb_L2_macc(
                 .clk                (clk),
                 .reset              (reset),
+                .enable             (1),
                 .bit_stream         (L2_macc_out_stoch[j]),
                 .bin_number         (L2_macc_out_bin[j]),
                 .done               (done_stb_macc_L2[j])

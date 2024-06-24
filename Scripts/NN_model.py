@@ -103,7 +103,11 @@ USE_RELU = 1
 ###################################################################
 ## Stochastic Neuron Functions ##
 def sigmoid(x):
-    return 1 / (1 + np.exp(-4*x))
+    # Scale value by 256
+    y = x/256
+    z = 1 / (1 + np.exp(-4*y))
+    # Scale back to integer
+    return z*256
 
 def relu(x):
     if x > 0:
@@ -153,7 +157,7 @@ def Neuron_L2(inputs, weights, bias):
     else:
         neur_out = sigmoid(bias_out)
 
-    return neur_out
+    return (macc_out, bias_out, neur_out)
 
 def Neuron_L3(inputs, weights, bias):
     """
@@ -184,13 +188,13 @@ def Neuron_L3(inputs, weights, bias):
     else:
         neur_out = sigmoid(bias_out)
 
-    return neur_out
+    return (macc_out, bias_out, neur_out)
 
 
 ######################## Neural Network ###########################
 ###################################################################
 
-test_data = test_data_digits["test_data_nine"]
+test_data = test_data_digits["test_data_zero"]
 
 NUM_NEUR_L2 = 32
 NUM_NEUR_L3 = 10
@@ -206,7 +210,9 @@ L2_bias_out = []
 for i in range(NUM_NEUR_L2):    
     result = Neuron_L2(test_data, W_ARRAY_L2[i], B_ARRAY_L2[i])
     
-    L2_results.append(result)
+    L2_macc_out.append(result[0])
+    L2_bias_out.append(result[1])
+    L2_results.append(result[2])
 
 
 #### Calculate layer3 outputs ###
@@ -217,7 +223,9 @@ L3_bias_out = []
 for i in range(NUM_NEUR_L3):
     result = Neuron_L3(L2_results, W_ARRAY_L3[i], B_ARRAY_L3[i])
 
-    L3_results.append(result)
+    L3_macc_out.append(result[0])
+    L3_bias_out.append(result[1])
+    L3_results.append(result[2])
     
 #### Get Max Index ####
 max_index = L3_results.index(max(L3_results))

@@ -1,10 +1,11 @@
 // Stochastic to Binary converter
-// Updated: removed second always block, caused issue with multiple drivers
-// on done signal.
+// Update 1: removed second always block, caused issue with multiple drivers on done signal.
+// Update 2: Added enable signal to allow for processing results after finished
 
 module StochToBin (
     input clk,
     input reset,
+    input enable,
     input bit_stream,
     output [7:0] bin_number,
     output done
@@ -21,14 +22,17 @@ module StochToBin (
             clk_count <= 0;
             ones_count <= 0;
         end else begin
-            // 256 clk cycles
-            if (clk_count < 8'd255) begin
-                ones_count <= ones_count + bit_stream;
-                clk_count <= clk_count + 1;
-            end else begin
-                // reset counter to 0 and ones_count to incoming bit
-                clk_count <= 0;
-                ones_count <= bit_stream;
+            // enable logic, if enable, do stuff, otherwise do nothing
+            if (enable) begin
+                // 256 clk cycles
+                if (clk_count < 8'd255) begin
+                    ones_count <= ones_count + bit_stream;
+                    clk_count <= clk_count + 1;
+                end else begin
+                    // reset counter to 0 and ones_count to incoming bit
+                    clk_count <= 0;
+                    ones_count <= bit_stream;
+                end
             end
         end
     end

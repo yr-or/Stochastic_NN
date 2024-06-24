@@ -23,7 +23,7 @@ module Layer2_tb_top();
     logic [7:0] LFSR_seeds [0:NUM_TESTS-1] = '{252, 56, 61, 19, 176, 65, 7, 219, 37, 127, 100, 241, 213, 10, 158, 38, 205, 69, 105, 27, 64, 42, 77, 175, 69, 109, 168, 217, 164, 150};
     logic [7:0] LFSR_seed;
 
-    // Inst. NN_top
+    // Inst. Layer2
     Layer2_tb dut(
         .clk                (clk),
         .reset              (reset),

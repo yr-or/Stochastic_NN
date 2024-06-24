@@ -1,12 +1,12 @@
-// Layer 3 Neuron with 196 inputs for 8-bit data each
+// Layer 3 Neuron with 32 inputs for 8-bit data each
 // Only uses stochastic numbers
 // NOTE: Uses unipolar multiplier instead of bipolar
 
-module Neuron196_L2(
+module Neuron32_L3(
     input clk,
     input reset,
-    input input_data    [0:195],
-    input weights       [0:195],
+    input input_data    [0:31],
+    input weights       [0:31],
     input bias,
 
     output macc_out,    // Debug wire
@@ -15,7 +15,7 @@ module Neuron196_L2(
     );
 
     // Constants
-    localparam NUM_INPS = 196;
+    localparam NUM_INPS = 32;
     //typedef enum {LFSR_GAL, LFSR_FIB, PUF_RNG} RNG_SOURCE = LFSR_GAL;
 
     // wires/regs
@@ -23,7 +23,7 @@ module Neuron196_L2(
     wire result_bias;
 
     // MACC module
-    Macc196_L2 MAC_L2(
+    Macc32_L3 MAC_L3(
         .clk                (clk),
         .reset              (reset),
         .input_data         (input_data),

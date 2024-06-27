@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 def prob_to_bipolar(x):
     return (2*x)-1
@@ -18,6 +19,12 @@ def unipolar_to_int(x):
 def int_to_unipolar(x):
     return x/256
 
+def signed_int_to_bi_prob(x):
+    return prob_int_to_bipolar(x+128)
+
+def signed_int_arr_to_bi_prob(x_arr):
+    arr = [signed_int_to_bi_prob(x) for x in x_arr]
+    return arr
 
 ################# Tests Data, Weights and Biases ##################
 ###################################################################
@@ -91,9 +98,11 @@ W_ARRAY_L3 = (
 B_ARRAY_L3 = [ -16, 2, 2, -19, 11, 14, -3, -10, 8, 4 ]
 
 
+
 ######################## Debug Vars ###############################
 ###################################################################
-USE_STOCH_ADD = 0
+USE_STOCH_ADD = 1
+USE_SCALED_ADD = 0
 USE_RELU = 1
 ###################################################################
 
@@ -126,7 +135,8 @@ def Neuron_L2(inputs, weights, bias):
     Inputs: float values representing stoch probs.
     Outputs: float values repr. stoch. prob.
     """
-    #print("Inputs: ", [bipolar_to_prob_int(k) for k in inputs])
+    #print("Inputs: ", [bipolar_to_prob_int(k) for k in inputs])#
+    #print(f"weights: {weights}")
 
     # Multiply
     mul = [inputs[i]*weights[i] for i in range(len(inputs))]
@@ -147,7 +157,11 @@ def Neuron_L2(inputs, weights, bias):
         macc_out = (add_7_1 + add_7_2)/2
     
         # Add bias
-        bias_out = (macc_out + bias)/2
+        bias_out = (macc_out + (bias/256) )/2
+
+    elif USE_SCALED_ADD:
+        macc_out = sum(mul)/256
+        bias_out = (macc_out + (bias/256) ) / 2
     else:
         macc_out = sum(mul)
         bias_out = macc_out + bias
@@ -156,7 +170,7 @@ def Neuron_L2(inputs, weights, bias):
         neur_out = relu(bias_out)
     else:
         neur_out = sigmoid(bias_out)
-
+        
     return (macc_out, bias_out, neur_out)
 
 def Neuron_L3(inputs, weights, bias):
@@ -170,15 +184,18 @@ def Neuron_L3(inputs, weights, bias):
     
     # Accumulate
     if USE_STOCH_ADD:
-        # Sum pairs and /2
-        add_1 = add_stoch(mul)         # 16
+        # Sum pairs and /2, total = /32
+        add_1 = add_stoch(mul)      # 16
         add_2 = add_stoch(add_1)    # 8
         add_3 = add_stoch(add_2)    # 4
         add_4 = add_stoch(add_3)    # 2
         macc_out = (add_4[0] + add_4[1])/2
     
         # Add bias
-        bias_out = (macc_out + bias)/2
+        bias_out = (macc_out + (bias/8192) )/2
+    elif USE_SCALED_ADD:
+        macc_out = sum(mul)/32
+        bias_out = (macc_out + (bias/8192) ) / 2
     else:
         macc_out = sum(mul)
         bias_out = macc_out + bias
@@ -194,12 +211,22 @@ def Neuron_L3(inputs, weights, bias):
 ######################## Neural Network ###########################
 ###################################################################
 
-test_data = test_data_digits["test_data_seven"]
+
+
+test_data = test_data_digits["test_data_nine"]
 
 NUM_NEUR_L2 = 32
 NUM_NEUR_L3 = 10
 NUM_INP_L2 = 196
 NUM_INP_L3 = 32
+
+## Convert inputs to floats
+test_data_float = signed_int_arr_to_bi_prob(test_data)
+## Convert weights and biases to floats
+B_ARRAY_L2_float = signed_int_arr_to_bi_prob(B_ARRAY_L2)
+B_ARRAY_L3_float = signed_int_arr_to_bi_prob(B_ARRAY_L3)
+W_ARRAY_L2_float = [signed_int_arr_to_bi_prob(w_arr) for w_arr in W_ARRAY_L2]
+W_ARRAY_L3_float = [signed_int_arr_to_bi_prob(w_arr) for w_arr in W_ARRAY_L3]
 
 
 #### Calculate layer2 outputs ###
@@ -208,7 +235,7 @@ L2_macc_out = []
 L2_bias_out = []
 
 for i in range(NUM_NEUR_L2):    
-    result = Neuron_L2(test_data, W_ARRAY_L2[i], B_ARRAY_L2[i])
+    result = Neuron_L2(test_data_float, W_ARRAY_L2_float[i], B_ARRAY_L2_float[i])
     
     L2_macc_out.append(result[0])
     L2_bias_out.append(result[1])
@@ -221,7 +248,7 @@ L3_macc_out = []
 L3_bias_out = []
 
 for i in range(NUM_NEUR_L3):
-    result = Neuron_L3(L2_results, W_ARRAY_L3[i], B_ARRAY_L3[i])
+    result = Neuron_L3(L2_results, W_ARRAY_L3_float[i], B_ARRAY_L3_float[i])
 
     L3_macc_out.append(result[0])
     L3_bias_out.append(result[1])
@@ -232,9 +259,8 @@ max_index = L3_results.index(max(L3_results))
 
 print(max_index)
 
-# Print L2 results in same form as Vivado simulation
-print( [i for i in L3_results] )
-
+#print(L3_bias_out)
+print([a/512 for a in L3_bias_out])
 
 
 

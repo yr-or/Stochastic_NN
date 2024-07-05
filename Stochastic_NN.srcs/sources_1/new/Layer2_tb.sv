@@ -2,6 +2,8 @@
 // Inputs: Binary inputs x196, LFSR seed for input SNGs, to allow for testing
 // multiple seeds instead of multiple input values in simulation.
 // Output: Binary output of each neuron, binary macc results of each neuron
+//
+// Rev 1: Changed STBs to 16 bit, 1024 bitstream length for more accuracy
 
 module Layer2_tb(
     input clk,
@@ -9,8 +11,8 @@ module Layer2_tb(
     input [7:0] input_data_bin      [0:195],    // 196 8-bit values
     input [7:0] LFSR_inp_seed,
 
-    output [7:0] results_bin        [0:31],     // 32 Neurons / outputs
-    output [7:0] macc_results_bin   [0:31],
+    output [15:0] results_bin        [0:31],     // 32 Neurons / outputs
+    output [15:0] macc_results_bin   [0:31],
     output done
     );
 
@@ -51,18 +53,18 @@ module Layer2_tb(
     // Layer2
     wire [0:NUM_NEUR_L2-1] done_stb_res_L2;
     wire [0:NUM_NEUR_L2-1] done_stb_macc_L2;
-    wire [7:0] L2_out_bin [0:NUM_NEUR_L2-1];
-    wire [7:0] L2_macc_out_bin [0:NUM_NEUR_L2-1];
+    wire [15:0] L2_out_bin [0:NUM_NEUR_L2-1];       // Changed to 16 bits
+    wire [15:0] L2_macc_out_bin [0:NUM_NEUR_L2-1];  // Changed to 16 bits
 
     // Layer2 outputs STBs
     genvar j;
     generate
         for (j=0; j<NUM_NEUR_L2; j=j+1) begin
             // Convert layer 2 outputs to binary
-            StochToBin stb_L2_res(
+            StochToBin #(.BITSTR_LEN(2048)) stb_L2_res(
                 .clk                (clk),
                 .reset              (reset),
-                .enable             (1),
+                .enable             (1'b1),
                 .bit_stream         (L2_out_stoch[j]),
                 .bin_number         (L2_out_bin[j]),
                 .done               (done_stb_res_L2[j])
@@ -74,10 +76,10 @@ module Layer2_tb(
     // Convert macc results to binary
     generate
         for (j=0; j<NUM_NEUR_L2; j=j+1) begin
-            StochToBin stb_L2_macc(
+            StochToBin #(.BITSTR_LEN(2048)) stb_L2_macc(
                 .clk                (clk),
                 .reset              (reset),
-                .enable             (1),
+                .enable             (1'b1),
                 .bit_stream         (L2_macc_out_stoch[j]),
                 .bin_number         (L2_macc_out_bin[j]),
                 .done               (done_stb_macc_L2[j])

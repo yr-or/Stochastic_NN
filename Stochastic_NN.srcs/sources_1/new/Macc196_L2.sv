@@ -8,7 +8,15 @@ module Macc196_L2(
     input input_data    [0:195],
     input weights       [0:195],
     
-    output result
+    output result,
+    /////////// Debug wires /////////////
+    output add1_res_stoch [0:97],
+    output add2_res_stoch [0:48],
+    output add3_res_stoch [0:23],
+    output add4_res_stoch [0:11],
+    output add5_res_stoch [0:5],
+    output add6_res_stoch [0:2],
+    output add7_res_stoch [0:1]
     );
 
     // Consts
@@ -31,6 +39,13 @@ module Macc196_L2(
     wire add6_res   [0:NUM_ADDS_6-1];
     wire add7_res   [0:NUM_ADDS_7-1];      // Add remainder of stage 3 here
 
+    assign add1_res_stoch = add1_res;
+    assign add2_res_stoch = add2_res;
+    assign add3_res_stoch = add3_res;
+    assign add4_res_stoch = add4_res;
+    assign add5_res_stoch = add5_res;
+    assign add6_res_stoch = add6_res;
+    assign add7_res_stoch = add7_res;
 
     // Multipliers - 196 XNOR gates
     genvar i;
@@ -46,7 +61,7 @@ module Macc196_L2(
 
     // Adders stage 1 - 98 MUXes
     //reg [7:0] LFSR_seeds_add1 [0:3] = '{150, 118, 250, 58};
-    reg [7:0] LFSR_add1_seed = 8'd132;
+    reg [15:0] LFSR_add1_seed = 16'd12343;
     generate
         for (i=0; i<NUM_ADDS_1; i=i+1) begin
             Adder add1 (
@@ -61,7 +76,7 @@ module Macc196_L2(
     endgenerate
 
     // Adders stage 2 - 49 MUXes
-    reg [7:0] LFSR_add2_seed = 8'd191;
+    reg [15:0] LFSR_add2_seed = 16'd2934;
     generate
         for (i=0; i<NUM_ADDS_2; i=i+1) begin
             Adder add2 (
@@ -76,7 +91,7 @@ module Macc196_L2(
     endgenerate
 
     // Adders stage 3 - 24 MUXes
-    reg [7:0] LFSR_add3_seed = 8'd82;
+    reg [15:0] LFSR_add3_seed = 16'd9384;
     generate
         for (i=0; i<NUM_ADDS_3; i=i+1) begin
             Adder add3 (
@@ -91,7 +106,7 @@ module Macc196_L2(
     endgenerate
 
     // Adders stage 4 - 12 MUXes
-    reg [7:0] LFSR_add4_seed = 8'd181;
+    reg [15:0] LFSR_add4_seed = 16'd1258;
     generate
         for (i=0; i<NUM_ADDS_4; i=i+1) begin
             Adder add4 (
@@ -106,7 +121,7 @@ module Macc196_L2(
     endgenerate
 
     // Adders stage 5 - 6 MUXes
-    reg [7:0] LFSR_add5_seed = 8'd99;
+    reg [15:0] LFSR_add5_seed = 16'd1456;
     generate
         for (i=0; i<NUM_ADDS_4; i=i+1) begin
             Adder add5 (
@@ -121,7 +136,7 @@ module Macc196_L2(
     endgenerate
 
     // Adders stage 6 - 3 MUXes
-    reg [7:0] LFSR_add6_seed = 8'd25;
+    reg [15:0] LFSR_add6_seed = 16'd2568;
     generate
         for (i=0; i<NUM_ADDS_5; i=i+1) begin
             Adder add6 (
@@ -137,7 +152,7 @@ module Macc196_L2(
 
     // Adders stage 7 - 2 MUXes
     // Note: Last output of stage 2 adds is added in second MUX here
-    reg [7:0] LFSR_add7_seed = 8'd79;
+    reg [15:0] LFSR_add7_seed = 16'd1412;
     Adder add7_1 (
         .clk                    (clk),
         .reset                  (reset),
@@ -159,7 +174,7 @@ module Macc196_L2(
     Adder add8 (
         .clk                    (clk),
         .reset                  (reset),
-        .seed                   (8'd58),
+        .seed                   (16'd5823),
         .stoch_num1             (add7_res[0]),
         .stoch_num2             (add7_res[1]),
         .result_stoch           (result)

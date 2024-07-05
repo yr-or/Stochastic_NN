@@ -27,7 +27,7 @@ module Layer3(
 
     // Hardcoded biases and weights as bipolar int8 probabilities
     // 10 neurons => 10 biases
-    reg [7:0] B_ARRAY_L3 [0:NUM_NEUR-1] = '{ 112, 130, 130, 109, 139, 142, 125, 118, 136, 132 };
+    reg [7:0] B_ARRAY_L3 [0:NUM_NEUR-1] = '{ 127, 128, 128, 127, 128, 128, 127, 127, 128, 128 };
 
     // 10 neurons x 32 inputs => 10x32 weights
     reg [7:0] W_ARRAY_L3 [0:NUM_NEUR-1][0:NUM_INP-1] = '{

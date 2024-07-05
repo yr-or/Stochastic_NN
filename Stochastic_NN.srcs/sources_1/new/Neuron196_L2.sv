@@ -8,8 +8,15 @@ module Neuron196_L2(
     input weights       [0:195],
     input bias,
 
-    output macc_out,    // Debug wire
-    output bias_out,    // Debug wire
+    output macc_out,                // Debug wire
+    output add1_res_stoch [0:97],   // Debug wire
+    output add2_res_stoch [0:48],
+    output add3_res_stoch [0:23],
+    output add4_res_stoch [0:11],
+    output add5_res_stoch [0:5],
+    output add6_res_stoch [0:2],
+    output add7_res_stoch [0:1],
+    output bias_out,                // Debug wire
     output result
     );
 
@@ -27,14 +34,22 @@ module Neuron196_L2(
         .reset              (reset),
         .input_data         (input_data),
         .weights            (weights),
-        .result             (result_macc)
+        .result             (result_macc),
+
+        .add1_res_stoch     (add1_res_stoch),
+        .add2_res_stoch     (add2_res_stoch),
+        .add3_res_stoch     (add3_res_stoch),
+        .add4_res_stoch     (add4_res_stoch),
+        .add5_res_stoch     (add5_res_stoch),
+        .add6_res_stoch     (add6_res_stoch),
+        .add7_res_stoch     (add7_res_stoch)
     );
 
     // Add bias - Mux adder
     Adder add_bias(
         .clk                (clk),
         .reset              (reset),
-        .seed               (8'd95),
+        .seed               (16'd4839),
         .stoch_num1         (result_macc),
         .stoch_num2         (bias),
         .result_stoch       (result_bias)

@@ -28,7 +28,7 @@ module Layer2(
     // Hardcoded biases and weights as bipolar int8 probabilities
     // 8-bit BINARY not stochastic
     // 32 neurons => 32 biases
-    reg [7:0] B_ARRAY_L2 [0:NUM_NEUR-1] = '{ 139, 129, 128, 137, 141, 140, 126, 129, 131, 147, 121, 140, 132, 145, 157, 165, 123, 148, 123, 143, 144, 139, 141, 148, 134, 154, 109, 121, 173, 124, 112, 133 };
+    reg [7:0] B_ARRAY_L2 [0:NUM_NEUR-1] = '{ 128, 128, 128, 128, 128, 128, 127, 128, 128, 128, 127, 128, 128, 128, 128, 128, 127, 128, 127, 128, 128, 128, 128, 128, 128, 128, 127, 127, 128, 127, 127, 128 };
 
     // 32 neurons x 196 inputs => 32x196 weights
     reg [7:0] W_ARRAY_L2 [0:NUM_NEUR-1][0:NUM_INP-1] = '{ 

@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 def prob_to_bipolar(x):
     return (2*x)-1
 
+
 def prob_int_to_bipolar(x):
     return prob_to_bipolar(x/256)
 
@@ -113,10 +114,9 @@ USE_RELU = 1
 ## Stochastic Neuron Functions ##
 def sigmoid(x):
     # Scale value by 256
-    y = x/256
-    z = 1 / (1 + np.exp(-4*y))
+    y = 1 / (1 + np.exp(-4*x))
     # Scale back to integer
-    return z*256
+    return y
 
 def relu(x):
     if x > 0:
@@ -213,7 +213,7 @@ def Neuron_L3(inputs, weights, bias):
 
 
 
-test_data = test_data_digits["test_data_nine"]
+test_data = test_data_digits["test_data_zero"]
 
 NUM_NEUR_L2 = 32
 NUM_NEUR_L3 = 10
@@ -259,9 +259,15 @@ max_index = L3_results.index(max(L3_results))
 
 print(max_index)
 
-#print(L3_bias_out)
-print([a/512 for a in L3_bias_out])
 
+
+############# DEBUG TESTS ##############
+########################################
+
+print(L2_macc_out)
+# Convert to bipolar integers to compare to Verilog TB
+L2_macc_out_bi_int16 = [int(bipolar_to_prob(x)*2048) for x in L2_macc_out]
+print(L2_macc_out_bi_int16)
 
 
 

@@ -3,7 +3,7 @@
 module Adder(
     input clk,
     input reset,
-    input [7:0] seed,
+    input [15:0] seed,
     input stoch_num1,
     input stoch_num2,
     output result_stoch
@@ -13,11 +13,11 @@ module Adder(
 
     // SNG for select line
     wire stoch_num_sel;
-    StochNumGen sng_sel(
+    StochNumGen16 sng_sel(
         .clk                (clk),
         .reset              (reset),
         .seed               (seed),
-        .prob               (8'b10000000), // 0.5
+        .prob               (16'b1000000000000000),     // 0.5
         .stoch_num          (stoch_num_sel)
     );
 

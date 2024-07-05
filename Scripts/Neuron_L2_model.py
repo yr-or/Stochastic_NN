@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 def prob_to_bipolar(x):
     return (2*x)-1
 
+def bipolar_to_prob(y):
+    return (y+1)/2
+
 def prob_int_to_bipolar(x):
     return prob_to_bipolar(x/256)
 
@@ -54,7 +57,7 @@ def add_stoch(inps):
     return [ (inps[i*2]+inps[(i*2)+1])/2 for i in range(int(len(inps)/2)) ]
 
 
-USE_STOCH_ADD = 0
+USE_STOCH_ADD = 1
 USE_SCALED_ADD = 0
 USE_RELU = 1
 
@@ -81,6 +84,7 @@ def Neuron_L2(inputs, weights, bias):
         # Stage 7 - add remainder of add_3
         add_7_1 = (add_6[0] + add_6[1])/2
         add_7_2 = (add_6[2] + add_2[48])/2
+        add_7 = [add_7_1, add_7_2]          # Just for printing values
         # Last stage
         macc_out = (add_7_1 + add_7_2)/2
     
@@ -99,11 +103,11 @@ def Neuron_L2(inputs, weights, bias):
     else:
         neur_out = sigmoid(bias_out)
         
-    return (macc_out, bias_out, neur_out)
+    return (macc_out, bias_out, neur_out, add_1, add_2, add_3, add_4, add_5, add_6, add_7)
 
 
 
-test_data = test_data_digits["test_data_nine"]
+test_data = test_data_digits["test_data_eight"]
 
 ## Convert inputs to floats
 test_data_float = signed_int_arr_to_bi_prob(test_data)
@@ -119,7 +123,18 @@ macc_out_L2 = result[0]
 bias_out_L2 = result[1]
 result_L2 = result[2]
 
-print(bias_out_L2/512)
+add1_res = result[3]
+add2_res = result[4]
+add3_res = result[5]
+add4_res = result[6]
+add5_res = result[7]
+add6_res = result[8]
+add7_res = result[9]
+
+
+# Convert to bipolar integers to compare to Verilog TB
+add1_out_bi_int8 = [int(bipolar_to_prob(x)*256) for x in add1_res]
+print(add1_out_bi_int8)
 
 
 

@@ -1,3 +1,5 @@
+# Rev 1: Adding scaling factor into bias values
+
 import matplotlib.pyplot as plt
 
 def prob_to_bipolar(x):
@@ -94,13 +96,15 @@ test_data_digits = {
 # Convert to bipolar ints and display in SV format
 # Conversion is just +128 for for signed int8 to bipolar probability
 
-def get_L2_vals():
+def get_L2_biases():
 	# L2 Bias array
 	print("reg [7:0] B_ARRAY_L2 [0:NUM_NEURS-1] = '{ ", end='')
 	for val in B_ARRAY_L2:
-		print(f"{val+128}, ", end='')
+		val_bi_int_scaled = int((val/256)+128)
+		print(f"{val_bi_int_scaled}, ", end='')
 	print(" };")
 
+def get_L2_weights():
 	# L2 Weights array
 	print("reg [7:0] W_ARRAY_L2 [0:NUM_NEURS-1][0:NUM_INPS-1] = '{ ", end='')
 	for val_arr in W_ARRAY_L2:
@@ -111,13 +115,15 @@ def get_L2_vals():
 	print(" };")
 
 
-def get_L3_vals():
+def get_L3_biases():
 	# L3 Bias array
 	print("reg [7:0] B_ARRAY_L3 [0:NUM_NEURS-1] = '{ ", end='')
 	for val in B_ARRAY_L3:
-		print(f"{val+128}, ", end='')
+		val_bi_int_scaled = int((val/8192)+128)
+		print(f"{val_bi_int_scaled}, ", end='')
 	print(" };")
 
+def get_L3_weights():
 	# L3 Weights array
 	print("reg [7:0] W_ARRAY_L3 [0:NUM_NEURS-1][0:NUM_INPS-1] = '{ ", end='')
 	for val_arr in W_ARRAY_L3:
@@ -138,11 +144,52 @@ def get_test_data():
 		print(" };")
 
 
+############## 16-bit #####################
+###########################################
+def get_test_data_16bit():
+	# Input data array
+
+	for var_name, vals in test_data_digits.items():
+		print(f"logic [15:0] {var_name} [0:NUM_INPS-1] = '{{ ", end='')
+		for val in vals:
+			print(f"{(val+128)*256}, ", end='')
+		print(" };")
+
+def get_L2_biases_16bit():
+	# L2 Bias array
+	print("reg [15:0] B_ARRAY_L2 [0:NUM_NEURS-1] = '{ ", end='')
+	for val in B_ARRAY_L2:
+		val_bi_int_scaled = int(val+32768)		# Because ((val/256) + 128)*256 = val + 128*256 = val+32768
+		print(f"{val_bi_int_scaled}, ", end='')
+	print(" };")
+
+def get_L2_weights_16bit():
+	# L2 Weights array
+	print("reg [15:0] W_ARRAY_L2 [0:NUM_NEURS-1][0:NUM_INPS-1] = '{ ", end='')
+	for val_arr in W_ARRAY_L2:
+		print("{ ", end='')
+		for val in val_arr:
+			print(f"{(val+128)*256}, ", end='')
+		print(" }")
+	print(" };")
+#############################################################################
+#############################################################################
+
+
+
+#get_L2_biases()
+#get_L3_biases()
+#get_L2_weights()
+
 #get_test_data()
+
+#get_test_data_16bit()
+get_L2_biases_16bit()
+#get_L2_weights_16bit()
 
 L2_weights_list = []
 for li in W_ARRAY_L2:
 	for val in li:
 		L2_weights_list.append(val)
-plt.hist(L2_weights_list)
-plt.show()
+#plt.hist(L2_weights_list)
+#plt.show()

@@ -40,7 +40,7 @@ module NN_top_tb();
     NN_top dut(
         .clk                (clk),
         .reset              (reset),
-        .input_data_bin     (test_data_one),
+        .input_data_bin     (test_data_nine),
         .LFSR_inp_seed      (LFSR_seed),
 
         .result_bin         (result_bin),

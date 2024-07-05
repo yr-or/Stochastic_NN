@@ -9,18 +9,20 @@ module LFSR8_Galois(
     );
 
     reg [7:0] shift_reg;
-    // intermediate wires
-    wire xor1, xor2, xor3;
-    assign xor1 = shift_reg[5] ^ shift_reg[7];
-    assign xor2 = xor1 ^ shift_reg[4];
-    assign xor3 = xor2 ^ shift_reg[3];
 
-    // 8-bit shift register with two taps
+    // 8-bit Galois LFSR with with taps at 8,6,5,4
     always @(posedge clk) begin
         if (reset)
             shift_reg <= seed;  // initial seed
         else
-            shift_reg <= {shift_reg[6:0], xor3};
+            shift_reg[7] <= shift_reg[0];
+            shift_reg[6] <= shift_reg[7];
+            shift_reg[5] <= shift_reg[6] ^ shift_reg[0];
+            shift_reg[4] <= shift_reg[5] ^ shift_reg[0];
+            shift_reg[3] <= shift_reg[4] ^ shift_reg[0];
+            shift_reg[2] <= shift_reg[3];
+            shift_reg[1] <= shift_reg[2];
+            shift_reg[0] <= shift_reg[0];
     end
 
     // Initial seed

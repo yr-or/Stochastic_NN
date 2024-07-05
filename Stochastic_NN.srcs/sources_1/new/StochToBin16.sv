@@ -1,22 +1,19 @@
-// Stochastic to Binary converter
-// Update 1: removed second always block, caused issue with multiple drivers on done signal.
-// Update 2: Added enable signal to allow for processing results after finished
-// Update 3: Changed to have paramaterisable bitstream length
-// Update 4: Changed outputs from 16-bit back to 8-bit due to mismatch issues
+// Stochastic to Binary converter with bitstream length of 2^16-1 = 65535
 
-module StochToBin (
+
+module StochToBin16 (
     input clk,
     input reset,
     input enable,
     input bit_stream,
-    output [7:0] bin_number,
+    output [15:0] bin_number,
     output done
     );
 
-    localparam BITSTR_LEN=255;
+    localparam BITSTR_LEN=65535;
 
-    reg [7:0] ones_count = 0;
-    reg [7:0] clk_count = 0;
+    reg [15:0] ones_count = 0;
+    reg [15:0] clk_count = 0;
 
     // Accumulate 1s in SN for 256 clk cycles, then reset
     always @(posedge clk) begin

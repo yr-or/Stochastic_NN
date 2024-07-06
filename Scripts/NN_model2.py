@@ -200,10 +200,12 @@ def Neuron_L3(inputs, weights, bias):
         macc_out = sum(mul)
         bias_out = macc_out + bias
 
-    if USE_RELU:
-        neur_out = relu(bias_out)
-    else:
-        neur_out = sigmoid(bias_out)
+    #if USE_RELU:
+    #    neur_out = relu(bias_out)
+    #else:
+    #    neur_out = sigmoid(bias_out)
+
+    neur_out = bias_out
 
     return (macc_out, bias_out, neur_out)
 
@@ -213,7 +215,7 @@ def Neuron_L3(inputs, weights, bias):
 
 
 
-test_data = test_data_digits["test_data_zero"]
+test_data = test_data_digits["test_data_six"]
 
 NUM_NEUR_L2 = 32
 NUM_NEUR_L3 = 10

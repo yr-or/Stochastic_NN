@@ -4,12 +4,13 @@
 // Output: Binary output of each neuron, binary macc results of each neuron
 //
 // Rev 1: Changed STBs to 16 bit, 1024 bitstream length for more accuracy
+// Rev 2: Change inputs and LFSR to 16-bit
 
 module Layer2_tb(
     input clk,
     input reset,
-    input [7:0] input_data_bin      [0:195],    // 196 8-bit values
-    input [7:0] LFSR_inp_seed,
+    input [15:0] input_data_bin      [0:195],    // 196 8-bit values
+    //input [15:0] LFSR_inp_seed,
 
     output [15:0] results_bin        [0:31],     // 32 Neurons / outputs
     output [15:0] macc_results_bin   [0:31],
@@ -26,14 +27,14 @@ module Layer2_tb(
     wire L2_out_stoch       [0:NUM_NEUR_L2-1];
     wire L2_macc_out_stoch  [0:NUM_NEUR_L2-1];
 
-    // Generate stoachastic inputs - 8 SNGs
+    // Generate stoachastic inputs - 196 SNGs
     genvar i;
     generate
         for (i=0; i<NUM_INP; i=i+1) begin
-            StochNumGen SNG_inps(
+            StochNumGen16 SNG_inps(
                 .clk                (clk),
                 .reset              (reset),
-                .seed               (LFSR_inp_seed),
+                .seed               (16'd24415),
                 .prob               (input_data_bin[i]),
                 .stoch_num          (inps_stoch[i])
             );
@@ -61,7 +62,7 @@ module Layer2_tb(
     generate
         for (j=0; j<NUM_NEUR_L2; j=j+1) begin
             // Convert layer 2 outputs to binary
-            StochToBin #(.BITSTR_LEN(2048)) stb_L2_res(
+            StochToBin16 stb_L2_res(
                 .clk                (clk),
                 .reset              (reset),
                 .enable             (1'b1),
@@ -76,7 +77,7 @@ module Layer2_tb(
     // Convert macc results to binary
     generate
         for (j=0; j<NUM_NEUR_L2; j=j+1) begin
-            StochToBin #(.BITSTR_LEN(2048)) stb_L2_macc(
+            StochToBin16 stb_L2_macc(
                 .clk                (clk),
                 .reset              (reset),
                 .enable             (1'b1),

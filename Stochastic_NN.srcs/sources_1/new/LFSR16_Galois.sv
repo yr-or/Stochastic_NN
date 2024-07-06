@@ -28,7 +28,7 @@ module LFSR16_Galois(
 
     // Initial seed
     initial begin
-        shift_reg = seed;
+        shift_reg = seed;       // DON'T CHANGE TO CONSTANT
     end
 
 assign parallel_out = shift_reg;

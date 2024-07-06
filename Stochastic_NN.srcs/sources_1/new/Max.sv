@@ -1,5 +1,6 @@
 // Return index of maximum stochastic number in array
 // Count 1s in bitstreams, most=max val
+// Update: Changed STB to STB16
 
 module Max (
     input clk,
@@ -12,7 +13,7 @@ module Max (
     localparam NUM_INP = 10;
 
     // wires
-    wire [7:0] stb_out [0:NUM_INP-1];
+    wire [15:0] stb_out [0:NUM_INP-1];
     wire [0:NUM_INP-1] done_stb_array;
     wire done_stb = &(done_stb_array);
     reg en_stb;
@@ -21,7 +22,7 @@ module Max (
     genvar i;
     generate
         for (i=0; i<NUM_INP; i=i+1) begin
-                StochToBin #(.BITSTR_LEN(2048)) stb(
+                StochToBin #(.BITSTR_LEN(2047)) stb(        // SET to 2^11-1
                     .clk                (clk),
                     .reset              (reset),
                     .enable             (en_stb),
@@ -34,7 +35,7 @@ module Max (
 
     // Registers
     reg [3:0] index_max = 0;
-    reg signed [7:0] max_val = 0;
+    reg signed [15:0] max_val = 0;
     reg [3:0] count_ff = 4'b0;          // 4-bit up-counter from 0 to 9
     reg done_ff = 1'b0;
 

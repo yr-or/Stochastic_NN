@@ -52,7 +52,7 @@ module Neuron196_L2_tb_top();
         //.LFSR1_seed             (LFSR1_seed),
         //.LFSR2_seed             (LFSR2_seed),
 
-        .result_bin             (neur_res_bin),
+        .result_bin             (neur_res_bin), 
         .macc_result_bin        (mac_res_bin),
         .bias_out_bin           (bias_out_bin),
         .done                   (done),

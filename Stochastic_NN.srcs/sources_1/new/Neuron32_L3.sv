@@ -35,7 +35,7 @@ module Neuron32_L3(
     Adder add_bias(
         .clk                (clk),
         .reset              (reset),
-        .seed               (8'd95),
+        .seed               (16'd28347),
         .stoch_num1         (result_macc),
         .stoch_num2         (bias),
         .result_stoch       (result_bias)

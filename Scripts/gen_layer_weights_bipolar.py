@@ -170,7 +170,25 @@ def get_L2_weights_16bit():
 		print("{ ", end='')
 		for val in val_arr:
 			print(f"{(val+128)*256}, ", end='')
-		print(" }")
+		print(" },")
+	print(" };")
+
+def get_L3_biases_16bit():
+	# L3 Bias array
+	print("reg [7:0] B_ARRAY_L3 [0:NUM_NEURS-1] = '{ ", end='')
+	for val in B_ARRAY_L3:
+		val_bi_int_scaled = int((val/32)+32768)		# Because ((val/8192) + 128)*256 = val + 128*256 = (val/32)+32768
+		print(f"{val_bi_int_scaled}, ", end='')
+	print(" };")
+
+def get_L3_weights_16bit():
+	# L3 Weights array
+	print("reg [7:0] W_ARRAY_L3 [0:NUM_NEURS-1][0:NUM_INPS-1] = '{ ", end='')
+	for val_arr in W_ARRAY_L3:
+		print("{ ", end='')
+		for val in val_arr:
+			print(f"{(val+128)*256}, ", end='')
+		print(" },")
 	print(" };")
 #############################################################################
 #############################################################################
@@ -184,8 +202,10 @@ def get_L2_weights_16bit():
 #get_test_data()
 
 #get_test_data_16bit()
-get_L2_biases_16bit()
-#get_L2_weights_16bit()
+#get_L2_biases_16bit()
+get_L2_weights_16bit()
+#get_L3_biases_16bit()
+#get_L3_weights_16bit()
 
 L2_weights_list = []
 for li in W_ARRAY_L2:

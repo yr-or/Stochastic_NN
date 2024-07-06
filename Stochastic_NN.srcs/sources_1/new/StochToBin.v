@@ -4,19 +4,17 @@
 // Update 3: Changed to have paramaterisable bitstream length
 // Update 4: Changed outputs from 16-bit back to 8-bit due to mismatch issues
 
-module StochToBin (
+module StochToBin #(parameter BITSTR_LEN=256) (
     input clk,
     input reset,
     input enable,
     input bit_stream,
-    output [7:0] bin_number,
+    output [15:0] bin_number,
     output done
     );
 
-    localparam BITSTR_LEN=255;
-
-    reg [7:0] ones_count = 0;
-    reg [7:0] clk_count = 0;
+    reg [15:0] ones_count = 0;
+    reg [15:0] clk_count = 0;
 
     // Accumulate 1s in SN for 256 clk cycles, then reset
     always @(posedge clk) begin

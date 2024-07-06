@@ -28,8 +28,8 @@ module Neuron196_L2_tb(
     );
 
     // Debug
-    reg [15:0] LFSR1_seed = 16'd2543;
-    reg [15:0] LFSR2_seed = 16'd4738;
+    reg [15:0] LFSR1_seed = 16'd24415;
+    reg [15:0] LFSR2_seed = 16'd12603;
 
     // Stochastic inputs
     wire inps_stoch       [0:NUM_INPS-1];

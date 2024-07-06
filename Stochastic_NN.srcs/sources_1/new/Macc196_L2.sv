@@ -123,7 +123,7 @@ module Macc196_L2(
     // Adders stage 5 - 6 MUXes
     reg [15:0] LFSR_add5_seed = 16'd1456;
     generate
-        for (i=0; i<NUM_ADDS_4; i=i+1) begin
+        for (i=0; i<NUM_ADDS_5; i=i+1) begin
             Adder add5 (
                 .clk                    (clk),
                 .reset                  (reset),
@@ -138,7 +138,7 @@ module Macc196_L2(
     // Adders stage 6 - 3 MUXes
     reg [15:0] LFSR_add6_seed = 16'd2568;
     generate
-        for (i=0; i<NUM_ADDS_5; i=i+1) begin
+        for (i=0; i<NUM_ADDS_6; i=i+1) begin
             Adder add6 (
                 .clk                    (clk),
                 .reset                  (reset),

@@ -42,14 +42,17 @@ module Neuron32_L3(
     );
 
     // Activation function
+    /*
     Sigmoid_FSM act_fcn(
         .clk                (clk),
         .reset              (reset),
         .in_stoch           (result_bias),
         .out_stoch          (result)
     );
+    */
 
     assign macc_out = result_macc;
     assign bias_out = result_bias;
+    assign result = bias_out;
 
 endmodule

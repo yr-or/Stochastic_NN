@@ -10,8 +10,8 @@ module Layer3(
     input reset,
     input data_in_stoch     [0:31],
     
-    output macc_results     [0:9],
-    output results          [0:9]
+    output [15:0] results_bin [0:9],
+    output done
     );
 
     localparam NUM_NEUR = 10;
@@ -27,7 +27,7 @@ module Layer3(
 
     // Hardcoded biases and weights as bipolar int15 probabilities
     // 10 neurons => 10 biases
-    reg [15:0] B_ARRAY_L3 [0:NUM_NEUR-1] = '{ 32767, 32768, 32768, 32767, 32768, 32768, 32767, 32767, 32768, 32768 };
+    reg [15:0] B_ARRAY_L3 [0:NUM_NEUR-1] = '{ 32512, 32768, 32768, 32512, 32768, 32768, 32512, 32512, 32768, 32768 };
 
     // 10 neurons x 32 inputs => 10x32 weights
     reg [15:0] W_ARRAY_L3 [0:NUM_NEUR-1][0:NUM_INP-1] = '{
@@ -88,7 +88,21 @@ module Layer3(
         end
     endgenerate
 
-    assign results = neurons_out_stoch;
-    assign macc_results = maccs_out_stoch;
+    // STB Layer 3 results DEBUG
+    reg [9:0] done_stb_array;
+    generate
+        for (i=0; i<NUM_NEUR; i=i+1) begin
+                StochToBin16 stb_L3( 
+                    .clk                (clk),
+                    .reset              (reset),
+                    .enable             (1'b1),
+                    .bit_stream         (neurons_out_stoch[i]),
+                    .bin_number         (results_bin[i]),
+                    .done               (done_stb_array[i])
+                );
+        end
+    endgenerate
+
+    assign done = &(done_stb_array);
 
 endmodule

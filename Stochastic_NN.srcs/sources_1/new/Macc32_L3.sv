@@ -26,11 +26,11 @@ module Macc32_L3(
     wire add4_res   [0:NUM_ADDS_4-1];
 
 
-    // Unipolar Multipliers - 32 AND gates
+    // BIPOLAR Multipliers - 32 XNOR gates
     genvar i;
     generate
         for (i=0; i<NUM_INPS; i=i+1) begin
-            Mult_uni mu (
+            Mult_bi mu (
                 .stoch_num1             (input_data[i]),
                 .stoch_num2             (weights[i]),
                 .stoch_res              (mul_out[i])

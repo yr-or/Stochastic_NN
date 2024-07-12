@@ -102,8 +102,8 @@ B_ARRAY_L3 = [ -16, 2, 2, -19, 11, 14, -3, -10, 8, 4 ]
 
 ######################## Debug Vars ###############################
 ###################################################################
-USE_STOCH_ADD = 1
-USE_SCALED_ADD = 0
+USE_STOCH_ADD = 0
+USE_SCALED_ADD = 1
 USE_RELU = 1
 ###################################################################
 
@@ -215,7 +215,7 @@ def Neuron_L3(inputs, weights, bias):
 
 
 
-test_data = test_data_digits["test_data_six"]
+test_data = test_data_digits["test_data_eight"]
 
 NUM_NEUR_L2 = 32
 NUM_NEUR_L3 = 10

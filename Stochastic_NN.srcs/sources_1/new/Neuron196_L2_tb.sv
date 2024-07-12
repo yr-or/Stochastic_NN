@@ -2,6 +2,9 @@
 // Inputs: Stochastic inputs, weights and bias
 // Output: 8-bit binary result
 
+(* keep_hierarchy = "yes" *)
+(* DONT_TOUCH = "yes" *)
+(* keep = "true" *)
 module Neuron196_L2_tb(
     input clk,
     input reset,

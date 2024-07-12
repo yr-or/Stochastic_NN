@@ -5,6 +5,7 @@
 module Max (
     input clk,
     input reset,
+    input enable,
     input stoch_array [0:9],         // 10 inputs
     output [3:0] max_ind,            // 4 bit needed to store vals 0-9
     output done

@@ -14,9 +14,10 @@ module LFSR16_Galois(
     // i.e. the inputs to 13,12,10 are xord with 0
     // values are shifted from high to low, i.e. right-shifted
     always @(posedge clk) begin
-        if (reset)
+        if (reset) begin
             shift_reg <= seed;  // initial seed
-        else
+        end
+        else begin
             shift_reg[15] <= shift_reg[0];
             shift_reg[14] <= shift_reg[15];
             shift_reg[13] <= shift_reg[14] ^ shift_reg[0];
@@ -24,11 +25,7 @@ module LFSR16_Galois(
             shift_reg[11] <= shift_reg[12];
             shift_reg[10] <= shift_reg[11] ^ shift_reg[0];
             shift_reg[9:0] <= {shift_reg[10], shift_reg[9:1]};
-    end
-
-    // Initial seed
-    initial begin
-        shift_reg = seed;       // DON'T CHANGE TO CONSTANT
+        end
     end
 
 assign parallel_out = shift_reg;

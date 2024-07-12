@@ -159,7 +159,7 @@ def get_L2_biases_16bit():
 	# L2 Bias array
 	print("reg [15:0] B_ARRAY_L2 [0:NUM_NEURS-1] = '{ ", end='')
 	for val in B_ARRAY_L2:
-		val_bi_int_scaled = int(val+32768)		# Because ((val/256) + 128)*256 = val + 128*256 = val+32768
+		val_bi_int_scaled = int((val/256)+128)*256		# Correct yes
 		print(f"{val_bi_int_scaled}, ", end='')
 	print(" };")
 
@@ -169,7 +169,7 @@ def get_L2_weights_16bit():
 	for val_arr in W_ARRAY_L2:
 		print("{ ", end='')
 		for val in val_arr:
-			print(f"{(val+128)*256}, ", end='')
+			print(f"{ (val+128)*256 }, ", end='')
 		print(" },")
 	print(" };")
 
@@ -177,7 +177,7 @@ def get_L3_biases_16bit():
 	# L3 Bias array
 	print("reg [7:0] B_ARRAY_L3 [0:NUM_NEURS-1] = '{ ", end='')
 	for val in B_ARRAY_L3:
-		val_bi_int_scaled = int((val/32)+32768)		# Because ((val/8192) + 128)*256 = val + 128*256 = (val/32)+32768
+		val_bi_int_scaled = int((val/8192)+128)*256		# 
 		print(f"{val_bi_int_scaled}, ", end='')
 	print(" };")
 
@@ -187,7 +187,7 @@ def get_L3_weights_16bit():
 	for val_arr in W_ARRAY_L3:
 		print("{ ", end='')
 		for val in val_arr:
-			print(f"{(val+128)*256}, ", end='')
+			print(f"{(val+128)*256}, ", end='')				#
 		print(" },")
 	print(" };")
 #############################################################################
@@ -203,9 +203,9 @@ def get_L3_weights_16bit():
 
 #get_test_data_16bit()
 #get_L2_biases_16bit()
-get_L2_weights_16bit()
-#get_L3_biases_16bit()
-#get_L3_weights_16bit()
+#get_L2_weights_16bit()
+get_L3_biases_16bit()
+get_L3_weights_16bit()
 
 L2_weights_list = []
 for li in W_ARRAY_L2:

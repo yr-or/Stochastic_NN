@@ -1,6 +1,9 @@
 // Layer 2 Neuron with 196 inputs for 8-bit data each
 // Only uses stochastic numbers
 
+(* keep_hierarchy = "yes" *)
+(* DONT_TOUCH = "yes" *)
+(* keep = "true" *)
 module Neuron196_L2(
     input clk,
     input reset,
@@ -56,14 +59,17 @@ module Neuron196_L2(
     );
 
     // Activation function
+    /*
     Sigmoid_FSM act_fcn(
         .clk                (clk),
         .reset              (reset),
         .in_stoch           (result_bias),
         .out_stoch          (result)
     );
+    */
 
     assign macc_out = result_macc;
     assign bias_out = result_bias;
+    assign result = result_bias;
 
 endmodule

@@ -20,6 +20,12 @@ def unipolar_to_int(x):
 def int_to_unipolar(x):
 	return x/256
 
+def prob_int16_to_bipolar(x):
+    return prob_to_bipolar(x/65536)
+
+def bipolar_to_prob_int16(y):
+    return int(bipolar_to_prob(y)*65536)
+
 # Layer 2 Bias values from colab notebook
 B_ARRAY_L2 = [ 11, 1, 0, 9, 13, 12, -2, 1, 3, 19, -7, 12, 4, 17, 29, 37, -5, 20, -5, 15, 16, 11, 13, 20, 6, 26, -19, -7, 45, -4, -16, 5 ]
 
@@ -159,7 +165,7 @@ def get_L2_biases_16bit():
 	# L2 Bias array
 	print("reg [15:0] B_ARRAY_L2 [0:NUM_NEURS-1] = '{ ", end='')
 	for val in B_ARRAY_L2:
-		val_bi_int_scaled = int((val/256)+128)*256		# Correct yes
+		val_bi_int_scaled = bipolar_to_prob_int16(int((val/256)/256))
 		print(f"{val_bi_int_scaled}, ", end='')
 	print(" };")
 
@@ -202,10 +208,10 @@ def get_L3_weights_16bit():
 #get_test_data()
 
 #get_test_data_16bit()
-#get_L2_biases_16bit()
-#get_L2_weights_16bit()
-get_L3_biases_16bit()
-get_L3_weights_16bit()
+get_L2_biases_16bit()
+get_L2_weights_16bit()
+#get_L3_biases_16bit()
+#get_L3_weights_16bit()
 
 L2_weights_list = []
 for li in W_ARRAY_L2:

@@ -28,14 +28,32 @@ add5_viv_int = [128,126,124,129,133,130]
 add6_viv_int = [130,123,127]
 add7_viv_int = [126,136]
 
-# Vivado results - 16-bit
+# Vivado results - 16-bit - BEFORE LFSR FIX
+
 add1_viv_int16 = [32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 31873, 33373, 32809, 32767, 32767, 32767, 32767, 26671, 41167, 34415, 32767, 32767, 32767, 32767, 25943, 33657, 33743, 32767, 32767, 32767, 32767, 26335, 38525, 34379, 32767, 32767, 32767, 32767, 27585, 34627, 32707, 32767, 32767, 32767, 31891, 27997, 32875, 32767, 32767, 32767, 32815, 32443, 28835, 32767, 32767, 32767, 32767, 32767, 35791, 29891, 32767, 32767, 32767, 32767, 32975, 34553, 32245, 32767, 32767, 32767, 32767, 37299, 38367, 32949, 32767, 32767, 32767, 32767, 33711, 32283, 32831, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767]
 add2_viv_int16 = [32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32323, 33093, 32767, 32767, 33917, 33591, 32767, 29355, 33697, 32767, 32767, 32431, 33571, 32767, 30175, 33665, 32767, 32327, 30435, 32767, 32791, 30639, 32767, 32767, 34279, 31329, 32767, 32869, 33399, 32767, 32767, 37837, 32859, 32767, 33241, 32557, 32767, 32767, 32767, 32767, 32767]
 add3_viv_int16 = [32767, 32767, 32767, 32767, 32713, 32767, 33755, 31061, 33233, 32599, 33169, 31921, 32547, 31601, 31713, 32767, 32803, 32819, 33081, 35301, 32811, 32899, 32767, 32767]
 add4_viv_int16 = [32767, 32767, 32741, 32409, 32913, 32547, 32073, 32243, 32811, 34191, 32855, 32767]
 add5_viv_int16 = [32767, 32579, 32727, 32157, 33505, 32813]
 add6_viv_int16 = [32699,32163,33403]
-add7_viv_int16 = [32441,33075]
+add7_viv_int16 = [32441, 33075]
+macc_out_viv_int16 = 32763
+bias_out_viv_int16 = 32764
+neur_out_viv_int16 = 32618
+"""
+
+# Vivado sim results - 16-bit - AFTER LFSR CHANGE
+add1_viv_int16 = [32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 31875, 33373, 32809, 32767, 32767, 32767, 32767, 26671, 41167, 34417, 32767, 32767, 32767, 32767, 25941, 33657, 33743, 32767, 32767, 32767, 32767, 26337, 38525, 34379, 32767, 32767, 32767, 32767, 27587, 34625, 32707, 32767, 32767, 32767, 31891, 27995, 32875, 32767, 32767, 32767, 32815, 32445, 28833, 32767, 32767, 32767, 32767, 32767, 35789, 29889, 32767, 32767, 32767, 32767, 32975, 34551, 32245, 32767, 32767, 32767, 32767, 37299, 38365, 32949, 32767, 32767, 32767, 32767, 33713, 32281, 32831, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767]
+add2_viv_int16 = [32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32389, 33107, 32767, 32767, 33919, 33521, 32767, 29409, 33693, 32767, 32767, 32355, 33507, 32767, 30083, 33611, 32767, 32331, 30379, 32767, 32791, 30649, 32767, 32767, 34225, 31373, 32767, 32865, 33333, 32767, 32767, 37783, 32859, 32767, 33175, 32497, 32767, 32767, 32767, 32767, 32767]
+add3_viv_int16 = [32767, 32767, 32767, 32767, 32747, 32767, 33721, 31087, 33231, 32559, 33139, 31849, 32547, 31573, 31721, 32767, 32799, 32815, 33051, 35271, 32813, 32835, 32767, 32767]
+add4_viv_int16 = [32767, 32767, 32749, 32407, 32899, 32487, 32063, 32249, 32809, 34159, 32825, 32767]
+add5_viv_int16 = [32767, 32511, 32691, 32119, 33471, 32797]
+add6_viv_int16 = [32653,32417,33157]
+add7_viv_int16 = [32537, 32965]
+macc_out_viv_int16 = 32745
+bias_out_viv_int16 = 32714
+neur_out_viv_int16 = 32714
+"""
 
 # Convert vivado values to floats
 add1_viv_float = [prob_int16_to_bipolar(x) for x in add1_viv_int16]
@@ -46,13 +64,16 @@ add5_viv_float = [prob_int16_to_bipolar(x) for x in add5_viv_int16]
 add6_viv_float = [prob_int16_to_bipolar(x) for x in add6_viv_int16]
 add7_viv_float = [prob_int16_to_bipolar(x) for x in add7_viv_int16]
 
-macc_out_viv_int16 = 32763
-bias_out_viv_int16 = 32764
-neur_out_viv_int16 = 32618
-# Convert to floats
+# Convert outputs to floats
 macc_out_viv_float = prob_int16_to_bipolar(macc_out_viv_int16)
 bias_out_viv_float = prob_int16_to_bipolar(bias_out_viv_int16)
 neur_out_viv_float = prob_int16_to_bipolar(neur_out_viv_int16)
+
+# Convert outputs rev2 to floats
+macc_out_viv_float = prob_int16_to_bipolar(macc_out_viv_int16)
+bias_out_viv_float = prob_int16_to_bipolar(bias_out_viv_int16)
+neur_out_viv_float = prob_int16_to_bipolar(neur_out_viv_int16)
+
 
 
 # Python results
@@ -162,6 +183,16 @@ MAE_series = [MAE_add1, MAE_add2, MAE_add3, MAE_add4, MAE_add5, MAE_add6, MAE_ad
 plt.figure(2)
 x_values = [i for i in range(10)]
 plt.title("MAE after each stage in Neuron196_L2")
-plt.plot(x_values, MAE_series)
+plt.bar(x_values, MAE_series)
 plt.grid()
 plt.show()
+
+# Print final outputs comparison
+print(f"Macc_out vivado float: {macc_out_viv_float}")
+print(f"Macc_out python float: {macc_out_pyt_float}")
+
+print(f"Bias_out vivado float: {bias_out_viv_float}")
+print(f"Bias_out python float: {bias_out_pyt_float}")
+
+print(f"Neur_out vivado float: {neur_out_viv_float}")
+print(f"Neur_out python float: {neur_out_pyt_float}")

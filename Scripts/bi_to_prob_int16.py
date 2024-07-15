@@ -8,7 +8,9 @@ def bipolar_to_prob_int16(y):
 
 args = sys.argv
 if len(args) == 2:
-	val_int = int(args[1])
-	print(bipolar_to_prob_int16(val_int))
+	val_float = float(args[1])
+	res = bipolar_to_prob_int16(val_float)
+	print("Decimal:", res)
+	print("Hex:\t", hex(res))
 else:
 	print("Wrong number of args")

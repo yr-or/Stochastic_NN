@@ -12,8 +12,8 @@ module SNG_synth(
     StochNumGen16 SNG(
         .clk                    (clk),
         .reset                  (reset),
-        .seed                   (input_prob),
-        .prob                   (16'd32768),     // 0.5
+        .seed                   (16'd32768),
+        .prob                   (input_prob),     // 0.5
         .stoch_num              (stoch_num)
     );
 

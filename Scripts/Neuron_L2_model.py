@@ -133,7 +133,7 @@ add7_res = result[9]
 
 
 # Convert to bipolar integers to compare to Verilog TB
-add1_out_bi_int8 = [int(bipolar_to_prob(x)*256) for x in add1_res]
+add1_out_bi_int8 = [int(bipolar_to_prob(x)*65536) for x in add1_res]
 print(add1_out_bi_int8)
 
 

@@ -25,6 +25,7 @@ module Test_L2_regen_synth(
     // Regen_L2 outputs
     wire [15:0] L2_neur_out_bin [0:31];
     wire [15:0] L2_macc_out_bin [0:31];
+    wire [15:0] L2_bias_out_bin [0:31];
     wire done;
 
     // Combinational block to select digit
@@ -56,8 +57,9 @@ module Test_L2_regen_synth(
         .clk                    (clk),
         .reset                  (reset),
         .input_data_bin         (input_data_bin),
-        .results_bin            (L2_neur_out_bin),
+        .relu_results_bin       (L2_neur_out_bin),
         .macc_results_bin       (L2_macc_out_bin),
+        .bias_results_bin       (L2_bias_out_bin),
         .done                   (done)
     );
 
@@ -129,7 +131,39 @@ module Test_L2_regen_synth(
         .probe62                 (L2_macc_out_bin[28]),
         .probe63                 (L2_macc_out_bin[29]),
         .probe64                 (L2_macc_out_bin[30]),
-        .probe65                 (L2_macc_out_bin[31])
+        .probe65                 (L2_macc_out_bin[31]),
+        .probe66                 (L2_bias_out_bin[0]),
+        .probe67                 (L2_bias_out_bin[1]),
+        .probe68                 (L2_bias_out_bin[2]),
+        .probe69                 (L2_bias_out_bin[3]),
+        .probe70                 (L2_bias_out_bin[4]),
+        .probe71                 (L2_bias_out_bin[5]),
+        .probe72                 (L2_bias_out_bin[6]),
+        .probe73                 (L2_bias_out_bin[7]),
+        .probe74                 (L2_bias_out_bin[8]),
+        .probe75                 (L2_bias_out_bin[9]),
+        .probe76                 (L2_bias_out_bin[10]),
+        .probe77                 (L2_bias_out_bin[11]),
+        .probe78                 (L2_bias_out_bin[12]),
+        .probe79                 (L2_bias_out_bin[13]),
+        .probe80                 (L2_bias_out_bin[14]),
+        .probe81                 (L2_bias_out_bin[15]),
+        .probe82                 (L2_bias_out_bin[16]),
+        .probe83                 (L2_bias_out_bin[17]),
+        .probe84                 (L2_bias_out_bin[18]),
+        .probe85                 (L2_bias_out_bin[19]),
+        .probe86                 (L2_bias_out_bin[20]),
+        .probe87                 (L2_bias_out_bin[21]),
+        .probe88                 (L2_bias_out_bin[22]),
+        .probe89                 (L2_bias_out_bin[23]),
+        .probe90                 (L2_bias_out_bin[24]),
+        .probe91                 (L2_bias_out_bin[25]),
+        .probe92                 (L2_bias_out_bin[26]),
+        .probe93                 (L2_bias_out_bin[27]),
+        .probe94                 (L2_bias_out_bin[28]),
+        .probe95                 (L2_bias_out_bin[29]),
+        .probe96                 (L2_bias_out_bin[30]),
+        .probe97                 (L2_bias_out_bin[31])
     );
 
 endmodule

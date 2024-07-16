@@ -11,7 +11,8 @@ module Test_L2_regen_top();
     reg reset = 0;
 
     // wires
-    wire [15:0] results_bin          [0:NUM_NEUR-1];
+    wire [15:0] relu_results_bin     [0:NUM_NEUR-1];
+    wire [15:0] bias_results_bin     [0:NUM_NEUR-1];
     wire [15:0] macc_results_bin     [0:NUM_NEUR-1];
     wire done;
 
@@ -34,8 +35,9 @@ module Test_L2_regen_top();
         .clk                        (clk),
         .reset                      (reset),
         .input_data_bin             (input_data_bin),
-        .results_bin                (results_bin),
+        .relu_results_bin           (relu_results_bin),
         .macc_results_bin           (macc_results_bin),
+        .bias_results_bin           (bias_results_bin),
         .done                       (done)
     );
 
@@ -62,17 +64,23 @@ module Test_L2_regen_top();
         #1310700;
 
         // print results
-        $write("L2_out: ");
-        $fwrite(fd, "L2_out: ");
+        $write("L2_relu_out: ");
+        $fwrite(fd, "L2_relu_out: ");
         for (int j=0; j<NUM_NEUR; j=j+1) begin
-            $write("%d, ", results_bin[j]);
-            $fwrite(fd, "%d, ", results_bin[j]);
+            $write("%d, ", relu_results_bin[j]);
+            $fwrite(fd, "%d, ", relu_results_bin[j]);
         end
         $write("\nL2_macc_out: ");
         $fwrite(fd, "\nL2_macc_out: ");
         for (int j=0; j<NUM_NEUR; j=j+1) begin
             $write("%d, ", macc_results_bin[j]);
             $fwrite(fd, "%d, ", macc_results_bin[j]);
+        end
+         $write("\nL2_bias_out: ");
+        $fwrite(fd, "\nL2_bias_out: ");
+        for (int j=0; j<NUM_NEUR; j=j+1) begin
+            $write("%d, ", bias_results_bin[j]);
+            $fwrite(fd, "%d, ", bias_results_bin[j]);
         end
         $write("\n");
         $fwrite(fd, "\n");

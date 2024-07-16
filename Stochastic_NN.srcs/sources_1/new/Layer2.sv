@@ -31,7 +31,7 @@ module Layer2(
     // Hardcoded biases and weights as bipolar int16 probabilities
     // 16-bit BINARY not stochastic
     // 32 neurons => 32 biases
-    reg [15:0] B_ARRAY_L2 [0:NUM_NEUR-1] = '{ 32779, 32769, 32768, 32777, 32781, 32780, 32766, 32769, 32771, 32787, 32761, 32780, 32772, 32785, 32797, 32805, 32763, 32788, 32763, 32783, 32784, 32779, 32781, 32788, 32774, 32794, 32749, 32761, 32813, 32764, 32752, 32773 };
+    reg [15:0] B_ARRAY_L2 [0:NUM_NEUR-1] = '{ 32773, 32768, 32768, 32772, 32774, 32774, 32767, 32768, 32769, 32777, 32764, 32774, 32770, 32776, 32782, 32786, 32765, 32778, 32765, 32775, 32776, 32773, 32774, 32778, 32771, 32781, 32758, 32764, 32790, 32766, 32760, 32770};
     
     // 32 neurons x 196 inputs => 32x196 weights
     reg [15:0] W_ARRAY_L2 [0:NUM_NEUR-1][0:NUM_INP-1] = '{ 
@@ -101,6 +101,25 @@ module Layer2(
         end
     endgenerate
 
+    /////////////// SNGs for adder select lines //////////////////
+    // Wire array for adder stages and bias, i.e. add1, add2, ... add8, add_bias
+    wire add_sel_stoch [0:8];
+    reg [15:0] adder_seeds [0:8] = '{49449, 65515, 49141, 34104, 65172, 23739, 62006, 39009, 47385};
+
+    generate
+        for (i=0; i<9; i=i+1) begin
+            StochNumGen16 SNG_add_sel(
+                .clk                (clk),
+                .reset              (reset),
+                .seed               (adder_seeds[i]),
+                .prob               (16'h8000),     // 0.5
+                .stoch_num          (add_sel_stoch[i])
+            );
+        end
+    endgenerate
+    //////////////////////////////////////////////////////////////
+
+
     // Generate 32 neurons
     generate
         for (i=0; i<NUM_NEUR; i=i+1) begin
@@ -110,6 +129,8 @@ module Layer2(
                 .input_data         (data_in_stoch),
                 .weights            (weights_stoch[i]),
                 .bias               (bias_stoch[i]),
+                .add_sel            (add_sel_stoch),
+
                 .result             (neurons_out_stoch[i]),
                 .macc_out           (maccs_out_stoch[i])
             );

@@ -1,6 +1,6 @@
-// Perform regeneration of outputs of L2 as well as:
-//     - Left-shift by 8 to multiply by 256
-//     - Apply ReLU function in binary domain
+
+
+// Perform regeneration of outputs of L2 and ReLU function
 
 (* keep_hierarchy = "yes" *)
 (* DONT_TOUCH = "yes" *)
@@ -31,7 +31,7 @@ module Regenerate_L2(
     genvar i;
     generate
         for (i=0; i<NUM_NEUR; i=i+1) begin
-            StochToBin #(.BITSTR_LEN(255)) STB(
+            StochToBin16 STB(
                 .clk                (clk),
                 .reset              (reset),
                 .enable             (1'b1),

@@ -5,11 +5,18 @@ def inc_int(str1):
     str2 = regexp.sub(lambda s: str(int(s.group())+1), str1)
     return str2
 
-text = r"""\"set_property -dict [list CONFIG.C_NUM_OF_PROBES {66} CONFIG.C_PROBE2_WIDTH {16}] [get_ips ila_0]\""""
+text = r"""// Adder stage 4
+    StochNumGen16 SNG_add4_sel(
+        .clk                (clk),
+        .reset              (reset),
+        .seed               (16'd12538),
+        .prob               (16'h8000),
+        .stoch_num          (add4_sel_stoch)
+    );"""
 
 
-exps_to_inc = [r"ila_\d"]
-NUM_ITERS = 64
+exps_to_inc = [r"stage \d", r"add\d"]
+NUM_ITERS = 4
 
 regexp = re.compile("|".join(exps_to_inc))
 

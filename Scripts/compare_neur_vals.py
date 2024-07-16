@@ -2,6 +2,9 @@
 For verifying the ouputs of the synthesised and implemented stochastic moudles in Vrilog
 """
 
+import matplotlib.pyplot as plt
+import numpy as np
+
 def bipolar_to_prob(y):
     return (y+1)/2
 
@@ -36,6 +39,33 @@ L2_macc_out_pyt_float = [-0.00023674964904785156, -0.005519866943359375, -0.0036
 L2_N0_macc_out_int16 = 32978
 L2_N0_bias_out_int16 = 16481
 
+# Vivado simulation with bitstr_len = 65536
+L2_relu_out_viv_int16 = [    0,     0,     0,     0, 32830, 32832, 32915, 32821, 32928,     0, 32793, 32814,     0, 32819, 32940, 32852, 32817,     0,     0, 32862, 32777, 32850, 32820,     0, 32842, 32803, 32940,     0,     0, 32778, 32807,     0]
+L2_bias_out_viv_int16 = [32758, 32661, 32695, 32729, 32830, 32832, 32915, 32821, 32928, 32541, 32793, 32814, 32728, 32819, 32940, 32852, 32817, 32638, 32721, 32862, 32777, 32850, 32820, 32620, 32842, 32803, 32940, 32737, 32762, 32778, 32807, 32732]
+L2_macc_out_viv_int16 = [32749, 32595, 32637, 32743, 32877, 32913, 33075, 32849, 33111, 32329, 32873, 32837, 32727, 32905, 33145, 32943, 32905, 32557, 32657, 32947, 32763, 32957, 32871, 32491, 32897, 32825, 33159, 32723, 32687, 32777, 32913, 32735]
+
 # Compare
 print( prob_int16_to_bipolar(L2_N0_macc_out_int16) )
 print( prob_int16_to_bipolar(L2_N0_bias_out_int16) )
+
+# Compare simulation vals vs python
+L2_bias_out_viv_float = [prob_int16_to_bipolar(x) for x in L2_bias_out_viv_int16]
+L2_macc_out_viv_float = [prob_int16_to_bipolar(x) for x in L2_macc_out_viv_int16]
+
+plt.figure(1)
+plt.title("L2 Bias_out comparison")
+x_vals = [i for i in range(32)]
+plt.bar(x_vals, L2_bias_out_pyt_float, label="Python vals"),
+plt.scatter(x_vals, L2_bias_out_viv_float, label="Vivado vals")
+plt.grid()
+plt.legend()
+
+plt.figure(2)
+plt.title("L2 Macc_out comparison")
+x_vals = [i for i in range(32)]
+plt.bar(x_vals, L2_macc_out_pyt_float, label="Python vals"),
+plt.scatter(x_vals, L2_macc_out_viv_float, label="Vivado vals")
+plt.grid()
+plt.legend()
+
+plt.show()

@@ -11,8 +11,8 @@ def bipolar_to_prob(y):
 def bipolar_to_prob_int(y):
     return int(bipolar_to_prob(y)*256)
 
-def bipolar_to_prob_int10(y):
-    return int(bipolar_to_prob(y)*4096)
+def bipolar_to_prob_int16(y):
+    return int(bipolar_to_prob(y)*65536)
 
 def prob_to_bipolar(x):
     return (2*x)-1
@@ -49,6 +49,7 @@ print( prob_int16_to_bipolar(L2_N0_macc_out_int16) )
 print( prob_int16_to_bipolar(L2_N0_bias_out_int16) )
 
 # Compare simulation vals vs python
+L2_relu_out_viv_float = [prob_int16_to_bipolar(x) for x in L2_relu_out_viv_int16]
 L2_bias_out_viv_float = [prob_int16_to_bipolar(x) for x in L2_bias_out_viv_int16]
 L2_macc_out_viv_float = [prob_int16_to_bipolar(x) for x in L2_macc_out_viv_int16]
 
@@ -69,3 +70,6 @@ plt.grid()
 plt.legend()
 
 plt.show()
+
+## Testing new values
+L2_relu_out_viv_int16_fixed = [32768, 32768, 32768, 32768, 32830, 32832, 32915, 32821, 32928, 32768, 32793, 32814, 32768, 32819, 32940, 32852, 32817, 32768, 32768, 32862, 32777, 32850, 32820, 32768, 32842, 32803, 32940, 32768, 32768, 32778, 32807, 32768]

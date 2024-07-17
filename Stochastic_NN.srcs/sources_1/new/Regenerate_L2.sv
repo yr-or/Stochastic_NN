@@ -49,7 +49,7 @@ module Regenerate_L2(
             if (L2_stb_out_bin[j] >= 16'd32768) begin
                 L2_relu_bin[j] = L2_stb_out_bin[j];
             end else begin
-                L2_relu_bin[j] = 16'b0;
+                L2_relu_bin[j] = 16'd32768;         // Changed from 0 to 32768 for bipolar 0
             end
         end
     end

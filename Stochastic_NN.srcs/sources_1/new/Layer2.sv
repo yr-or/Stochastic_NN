@@ -127,7 +127,7 @@ module Layer2(
                 .clk                (clk),
                 .reset              (reset),
                 .input_data         (data_in_stoch),
-                .weights            (weights_stoch[i]),
+                .weights            (weights_stoch[i]),     // weights_stoch[weights_LUT[i]]
                 .bias               (bias_stoch[i]),
                 .add_sel            (add_sel_stoch),
 

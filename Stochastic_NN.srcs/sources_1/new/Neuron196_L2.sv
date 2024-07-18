@@ -4,6 +4,8 @@
 (* keep_hierarchy = "yes" *)
 (* DONT_TOUCH = "yes" *)
 (* keep = "true" *)
+(* keep = "true" *)
+(* keep = "true" *)
 module Neuron196_L2(
     input clk,
     input reset,

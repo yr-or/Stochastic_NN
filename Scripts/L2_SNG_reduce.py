@@ -82,3 +82,32 @@ duplicates = {key: value for key, value in counter.items() if value>1}
 num_duplicates = sum(duplicates.values()) - len(duplicates)
 print(f"Num duplicates = {num_duplicates}")
 print(f"Num unique values = {len(W_ARRAY_L2_flat) - num_duplicates}")
+
+## Generate unqiue weights vector in descending order
+weights_uniq = [x[0] for x in occurs]
+print(weights_uniq)
+
+# Generate indexes in weights_uniq for each value in W_ARRAY_L2 2D array
+ind_arr_L2 = []
+for row in W_ARRAY_L2_int16_bipoalar:
+    ind_row = []
+    for val in row:
+        ind_row.append( weights_uniq.index(val) )
+    ind_arr_L2.append(ind_row)
+
+# Confirm that every value in W_ARRAY_L2_int16_bipoalar is in weights_uniq
+for row in W_ARRAY_L2_int16_bipoalar:
+    for val in row:
+        if val not in weights_uniq:
+            print("ERROR")
+
+# Print in verilog array form
+"""
+print("'{ ")
+for row in ind_arr_L2:
+    print("{", end="")
+    for val in row:
+        print(f"{val}, ", end="")
+    print("},")
+print("};")
+"""

@@ -11,6 +11,7 @@ module Macc196_L2(
     
     output result,
     /////////// Debug wires /////////////
+    output mul_out_stoch  [0:195],
     output add1_res_stoch [0:97],
     output add2_res_stoch [0:48],
     output add3_res_stoch [0:23],
@@ -40,6 +41,7 @@ module Macc196_L2(
     wire add6_res   [0:NUM_ADDS_6-1];
     wire add7_res   [0:NUM_ADDS_7-1];      // Add remainder of stage 3 here
 
+    assign mul_out_stoch = mul_out;
     assign add1_res_stoch = add1_res;
     assign add2_res_stoch = add2_res;
     assign add3_res_stoch = add3_res;

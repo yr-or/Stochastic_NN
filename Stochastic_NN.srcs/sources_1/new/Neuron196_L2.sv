@@ -13,6 +13,7 @@ module Neuron196_L2(
     input add_sel       [0:8],
 
     output macc_out,                // Debug wire
+    output mul_res_stoch  [0:195],
     output add1_res_stoch [0:97],   // Debug wire
     output add2_res_stoch [0:48],
     output add3_res_stoch [0:23],
@@ -41,6 +42,7 @@ module Neuron196_L2(
         .add_sel            (add_sel[0:7]),     // Just use first 8 values
         .result             (result_macc),
 
+        .mul_out_stoch      (mul_res_stoch),
         .add1_res_stoch     (add1_res_stoch),
         .add2_res_stoch     (add2_res_stoch),
         .add3_res_stoch     (add3_res_stoch),

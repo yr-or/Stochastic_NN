@@ -103,7 +103,7 @@ def Neuron_L2(inputs, weights, bias):
     else:
         neur_out = sigmoid(bias_out)
         
-    return (macc_out, bias_out, neur_out, add_1, add_2, add_3, add_4, add_5, add_6, add_7)
+    return (macc_out, bias_out, neur_out, add_1, add_2, add_3, add_4, add_5, add_6, add_7, mul)
 
 
 
@@ -130,6 +130,8 @@ add4_res = result[6]
 add5_res = result[7]
 add6_res = result[8]
 add7_res = result[9]
+
+mul_res = result[10]
 
 
 # Convert to bipolar integers to compare to Verilog TB

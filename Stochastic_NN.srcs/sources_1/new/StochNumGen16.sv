@@ -1,5 +1,8 @@
 // Stochastic number generator with 16-bit LFSR, including RNG source
 
+(* keep_hierarchy = "yes" *)
+(* DONT_TOUCH = "yes" *)
+(* keep = "true" *)
 module StochNumGen16
     (
         input clk,

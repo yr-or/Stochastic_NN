@@ -268,7 +268,7 @@ print(max_index)
 
 print(L2_macc_out)
 # Convert to bipolar integers to compare to Verilog TB
-L2_macc_out_bi_int16 = [int(bipolar_to_prob(x)*2048) for x in L2_macc_out]
+L2_macc_out_bi_int16 = [int(bipolar_to_prob(x)*65536) for x in L2_macc_out]
 print(L2_macc_out_bi_int16)
 
 

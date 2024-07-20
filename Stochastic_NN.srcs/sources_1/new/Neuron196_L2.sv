@@ -4,8 +4,6 @@
 (* keep_hierarchy = "yes" *)
 (* DONT_TOUCH = "yes" *)
 (* keep = "true" *)
-(* keep = "true" *)
-(* keep = "true" *)
 module Neuron196_L2(
     input clk,
     input reset,
@@ -54,8 +52,6 @@ module Neuron196_L2(
 
     // Add bias - Mux adder
     Adder_noSNG add_bias(
-        .clk                (clk),
-        .reset              (reset),
         .sel                (add_sel[8]),       // Use last value
         .stoch_num1         (result_macc),
         .stoch_num2         (bias),

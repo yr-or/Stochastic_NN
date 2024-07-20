@@ -45,7 +45,7 @@ module Test_L2_regen_top();
 
     // Apply test data in order, change LFSR seed each time to test
     initial begin
-        fd = $fopen("C:\Users\Rory\Documents\HDL\Stochastic_NN\Outputs\Layer2_regen_test.txt", "w");
+        fd = $fopen("Layer2_regen_test.txt", "w");
 
         // Set input
         reset = 1;

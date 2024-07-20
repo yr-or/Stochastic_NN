@@ -11,8 +11,6 @@ module Neuron196_L2_tb(
     input [15:0] input_data_bin  [0:195],
     input [15:0] weights_bin     [0:195],
     input [15:0] bias_bin,
-    //input [15:0] LFSR1_seed,
-    //input [15:0] LFSR2_seed,
 
     output [15:0] result_bin,
     output [15:0] macc_result_bin,
@@ -31,8 +29,8 @@ module Neuron196_L2_tb(
     );
 
     // Debug
-    reg [15:0] LFSR1_seed = 16'd24415;
-    reg [15:0] LFSR2_seed = 16'd12603;
+    reg [15:0] LFSR1_seed = 16'd25645;
+    reg [15:0] LFSR2_seed = 16'd57842;
 
     // Stochastic inputs
     wire inps_stoch       [0:NUM_INPS-1];
@@ -94,10 +92,28 @@ module Neuron196_L2_tb(
     StochNumGen16 SNG_bias(
         .clk                (clk),
         .reset              (reset),
-        .seed               (16'd3849),           // Changed from 8 to 16 bits
+        .seed               (16'd37483),           // Changed from 8 to 16 bits
         .prob               (bias_bin),
         .stoch_num          (bias_stoch)
     );
+
+    /////////////// SNGs for adder select lines //////////////////
+    // Wire array for adder stages and bias, i.e. add1, add2, ... add8, add_bias
+    wire add_sel_stoch [0:8];
+    reg [15:0] adder_seeds [0:8] = '{49449, 65515, 49141, 34104, 65172, 23739, 62006, 39009, 47385};
+
+    generate
+        for (i=0; i<9; i=i+1) begin
+            StochNumGen16 SNG_add_sel(
+                .clk                (clk),
+                .reset              (reset),
+                .seed               (adder_seeds[i]),
+                .prob               (16'h8000),     // 0.5
+                .stoch_num          (add_sel_stoch[i])
+            );
+        end
+    endgenerate
+    //////////////////////////////////////////////////////////////
 
     // Neuron
     Neuron196_L2 neur_L2(
@@ -106,6 +122,7 @@ module Neuron196_L2_tb(
         .input_data         (inps_stoch),
         .weights            (weights_stoch),
         .bias               (bias_stoch),
+        .add_sel            (add_sel_stoch),
 
         .macc_out           (macc_out_stoch),
         .add1_res_stoch     (add1_res_stoch),

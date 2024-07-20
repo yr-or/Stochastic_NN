@@ -12,9 +12,10 @@ module LFSR8_Galois(
 
     // 8-bit Galois LFSR with with taps at 8,6,5,4
     always @(posedge clk) begin
-        if (reset)
+        if (reset) begin
             shift_reg <= seed;  // initial seed
-        else
+        end 
+        else begin
             shift_reg[7] <= shift_reg[0];
             shift_reg[6] <= shift_reg[7];
             shift_reg[5] <= shift_reg[6] ^ shift_reg[0];
@@ -23,6 +24,7 @@ module LFSR8_Galois(
             shift_reg[2] <= shift_reg[3];
             shift_reg[1] <= shift_reg[2];
             shift_reg[0] <= shift_reg[0];
+        end
     end
 
     // Initial seed

@@ -64,8 +64,6 @@ module Macc196_L2(
     generate
         for (i=0; i<NUM_ADDS_1; i=i+1) begin
             Adder_noSNG add1 (
-                .clk                    (clk),
-                .reset                  (reset),
                 .sel                    (add_sel[0]),
                 .stoch_num1             (mul_out[i*2]),
                 .stoch_num2             (mul_out[(i*2)+1]),
@@ -79,8 +77,6 @@ module Macc196_L2(
     generate
         for (i=0; i<NUM_ADDS_2; i=i+1) begin
             Adder_noSNG add2 (
-                .clk                    (clk),
-                .reset                  (reset),
                 .sel                    (add_sel[1]),
                 .stoch_num1             (add1_res[i*2]),
                 .stoch_num2             (add1_res[(i*2)+1]),
@@ -94,8 +90,6 @@ module Macc196_L2(
     generate
         for (i=0; i<NUM_ADDS_3; i=i+1) begin
             Adder_noSNG add3 (
-                .clk                    (clk),
-                .reset                  (reset),
                 .sel                    (add_sel[2]),
                 .stoch_num1             (add2_res[i*2]),
                 .stoch_num2             (add2_res[(i*2)+1]),
@@ -109,8 +103,6 @@ module Macc196_L2(
     generate
         for (i=0; i<NUM_ADDS_4; i=i+1) begin
             Adder_noSNG add4 (
-                .clk                    (clk),
-                .reset                  (reset),
                 .sel                    (add_sel[3]),
                 .stoch_num1             (add3_res[i*2]),
                 .stoch_num2             (add3_res[(i*2)+1]),
@@ -124,8 +116,6 @@ module Macc196_L2(
     generate
         for (i=0; i<NUM_ADDS_5; i=i+1) begin
             Adder_noSNG add5 (
-                .clk                    (clk),
-                .reset                  (reset),
                 .sel                    (add_sel[4]),
                 .stoch_num1             (add4_res[i*2]),
                 .stoch_num2             (add4_res[(i*2)+1]),
@@ -139,8 +129,6 @@ module Macc196_L2(
     generate
         for (i=0; i<NUM_ADDS_6; i=i+1) begin
             Adder_noSNG add6 (
-                .clk                    (clk),
-                .reset                  (reset),
                 .sel                    (add_sel[5]),
                 .stoch_num1             (add5_res[i*2]),
                 .stoch_num2             (add5_res[(i*2)+1]),
@@ -153,16 +141,12 @@ module Macc196_L2(
     // Note: Last output of stage 2 adds is added in second MUX here
     reg [15:0] LFSR_add7_seed = 16'd1412;
     Adder_noSNG add7_1 (
-        .clk                    (clk),
-        .reset                  (reset),
         .sel                    (add_sel[6]),
         .stoch_num1             (add6_res[0]),
         .stoch_num2             (add6_res[1]),
         .result_stoch           (add7_res[0])
     );
     Adder_noSNG add7_2 (
-        .clk                    (clk),
-        .reset                  (reset),
         .sel                    (add_sel[6]),
         .stoch_num1             (add6_res[2]),
         .stoch_num2             (add2_res[48]),
@@ -171,8 +155,6 @@ module Macc196_L2(
 
     // Last adder - 1 MUX
     Adder_noSNG add8 (
-        .clk                    (clk),
-        .reset                  (reset),
         .sel                    (add_sel[7]),
         .stoch_num1             (add7_res[0]),
         .stoch_num2             (add7_res[1]),

@@ -2,8 +2,6 @@
 // Multiplexer with select line stochastic input, not generated in here
 
 module Adder_noSNG(
-    input clk,
-    input reset,
     input sel,
     input stoch_num1,
     input stoch_num2,

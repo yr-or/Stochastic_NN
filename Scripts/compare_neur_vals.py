@@ -111,6 +111,8 @@ L2_macc_out_ila_float = [prob_int16_to_bipolar(x) for x in L2_macc_out_ila_int16
 # [33878, 33239, 38417, 37084, 37789, 36364, 34935, 36080, 36890, 34382, 39444, 31901, 30958, 33651, 34048, 32870, 36157, 34919, 40231, 26182, 35548, 35212, 32498, 24153, 33773, 38554, 38524, 44816, 34888, 35502, 36389, 33934]
 L2_macc_out_pyt_float_eight = [prob_int16_to_bipolar(x) for x in L2_macc_out_pyt_int16_eight]
 
+L2_macc_out_pyt_float_zero = [prob_int16_to_bipolar(x) for x in L2_macc_out_pyt_int16_zero]
+
 print(L2_macc_out_ila_int16)
 
 plt.figure(1)
@@ -124,8 +126,8 @@ plt.legend()
 plt.figure(2)
 plt.title("L2 Macc_out comparison")
 x_vals = [i for i in range(32)]
-plt.bar(x_vals, L2_macc_out_pyt_float_eight, label="Python vals"),
-plt.scatter(x_vals, L2_macc_out_pyt_float, label="Vivado vals")
+plt.bar(x_vals, L2_macc_out_pyt_float_zero, label="Python vals"),
+plt.scatter(x_vals, L2_macc_out_ila_float, label="Vivado vals")
 plt.grid()
 plt.legend()
 

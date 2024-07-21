@@ -139,6 +139,42 @@ module Macc196_L2(
         end
     endgenerate
 
+    //////////////////////////////////////////////////////////////////////////
+    ////// Scale output 48 of add2 so that it adds correctly in stage 7 //////
+    /*
+    (* MARK_DEBUG = "TRUE" *) wire add2_res48_s1;
+    (* MARK_DEBUG = "TRUE" *) wire add2_res48_s2;
+    (* MARK_DEBUG = "TRUE" *) wire add2_res48_s3;
+    (* MARK_DEBUG = "TRUE" *) wire add2_res48_s4;
+    // Add bipolar zero value with add2[48] 4 times
+    // Bipolar 0 = 0.5 unipolar, so can just use sel line
+    Adder_noSNG add2_scale1 (
+        .sel                    (add_sel[1]),
+        .stoch_num1             (add_sel[2]),
+        .stoch_num2             (add2_res[48]),
+        .result_stoch           (add2_res48_s1)
+    );
+    Adder_noSNG add2_scale2 (
+        .sel                    (add_sel[3]),
+        .stoch_num1             (add_sel[4]),
+        .stoch_num2             (add2_res48_s1),
+        .result_stoch           (add2_res48_s2)
+    );
+    Adder_noSNG add2_scale3 (
+        .sel                    (add_sel[5]),
+        .stoch_num1             (add_sel[6]),
+        .stoch_num2             (add2_res48_s2),
+        .result_stoch           (add2_res48_s3)
+    );
+    Adder_noSNG add2_scale4 (
+        .sel                    (add_sel[3]),
+        .stoch_num1             (add_sel[5]),
+        .stoch_num2             (add2_res48_s3),
+        .result_stoch           (add2_res48_s4)
+    );
+    ////////////////////////////////////////////////////////////////////////////
+    */
+
     // Adder_noSNGs stage 7 - 2 MUXes
     // Note: Last output of stage 2 adds is added in second MUX here
     reg [15:0] LFSR_add7_seed = 16'd1412;
@@ -151,7 +187,7 @@ module Macc196_L2(
     Adder_noSNG add7_2 (
         .sel                    (add_sel[6]),
         .stoch_num1             (add6_res[2]),
-        .stoch_num2             (add2_res[48]),
+        .stoch_num2             (add2_res[48]),        // Changed to scaled value
         .result_stoch           (add7_res[1])
     );
 

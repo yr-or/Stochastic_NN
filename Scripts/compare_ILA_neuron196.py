@@ -5,7 +5,7 @@ from sklearn.metrics import mean_absolute_error
 import re
 
 ############### Read ILA data from impl Layer2 ################
-file1 = "C:\\Users\\Rory\\Documents\\HDL\Stochastic_NN\\Outputs\\iladata_neuron_all_trial4.csv"
+file1 = "C:\\Users\\Rory\\Documents\\HDL\Stochastic_NN\\Outputs\\iladata_neuron_all_digit8_trial2.csv"
 
 df1 = pd.read_csv(file1)
 
@@ -165,16 +165,16 @@ bias_out_pyt_float_digit0 = 0.003185272216796875
 neur_out_pyt_float_digit0 = 0.003185272216796875
 
 ## Select python digit
-add1_pyt_float = add1_pyt_float_digit0
-add2_pyt_float = add2_pyt_float_digit0
-add3_pyt_float = add3_pyt_float_digit0
-add4_pyt_float = add4_pyt_float_digit0
-add5_pyt_float = add5_pyt_float_digit0
-add6_pyt_float = add6_pyt_float_digit0
-add7_pyt_float = add7_pyt_float_digit0
-macc_out_pyt_float = macc_out_pyt_float_digit0
-bias_out_pyt_float = bias_out_pyt_float_digit0
-neur_out_pyt_float = neur_out_pyt_float_digit0
+add1_pyt_float = add1_pyt_float_digit8
+add2_pyt_float = add2_pyt_float_digit8
+add3_pyt_float = add3_pyt_float_digit8
+add4_pyt_float = add4_pyt_float_digit8
+add5_pyt_float = add5_pyt_float_digit8
+add6_pyt_float = add6_pyt_float_digit8
+add7_pyt_float = add7_pyt_float_digit8
+macc_out_pyt_float = macc_out_pyt_float_digit8
+bias_out_pyt_float = bias_out_pyt_float_digit8
+neur_out_pyt_float = neur_out_pyt_float_digit8
 
 
 ####### Plot and compare outputs ########

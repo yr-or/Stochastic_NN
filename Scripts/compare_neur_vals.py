@@ -1,5 +1,5 @@
 """
-For verifying the ouputs of the synthesised and implemented stochastic moudles in Vrilog
+For verifying the ouputs of the synthesised and implemented stochastic Layer2 in Vrilog
 """
 
 import matplotlib.pyplot as plt

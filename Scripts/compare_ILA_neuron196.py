@@ -1,3 +1,7 @@
+"""
+For comparing outputs implemented neuron196 from ILA data to python data
+"""
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -5,7 +9,7 @@ from sklearn.metrics import mean_absolute_error
 import re
 
 ############### Read ILA data from impl Layer2 ################
-file1 = "C:\\Users\\Rory\\Documents\\HDL\Stochastic_NN\\Outputs\\iladata_neuron_all_digit8_trial2.csv"
+file1 = "C:\\Users\\Rory\\Documents\\HDL\Stochastic_NN\\Outputs\\iladata_neuron_all_digit8_trial3.csv"
 
 df1 = pd.read_csv(file1)
 

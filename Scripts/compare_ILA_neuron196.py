@@ -9,7 +9,11 @@ from sklearn.metrics import mean_absolute_error
 import re
 
 ############### Read ILA data from impl Layer2 ################
-file1 = "C:\\Users\\Rory\\Documents\\HDL\Stochastic_NN\\Outputs\\iladata_neuron_all_digit8_trial3.csv"
+"""
+iladata_neuron_all_digit8_trial3.csv"   # Working data for neuron non-regen
+Neur_regen_iladata.csv                  # Digit 8 neur regen data
+"""
+file1 = "C:\\Users\\Rory\\Documents\\HDL\Stochastic_NN\\Outputs\\Neur_regen_digit0_iladata.csv"
 
 df1 = pd.read_csv(file1)
 
@@ -28,6 +32,8 @@ data = df.iloc[row_index_done, 5:]
 ## ILA results - Neuron196 input digit=8
 macc_out_bin_ila_int16 = data["macc_out_bin[15:0]"]
 bias_out_bin_ila_int16 = data["bias_out_bin[15:0]"]
+relu_out_bin_ila_int16 = data["relu_out_bin[15:0]"]     # Change to bias_out if using data from non-regen neuron
+
 add1_res_bin_ila_int16 = data.loc[:, "add1_res_bin[0][15:0]":"add1_res_bin[97][15:0]"]
 add2_res_bin_ila_int16 = data.loc[:, "add2_res_bin[0][15:0]":"add2_res_bin[48][15:0]"]
 add3_res_bin_ila_int16 = data.loc[:, "add3_res_bin[0][15:0]":"add3_res_bin[23][15:0]"]
@@ -66,6 +72,19 @@ add7_viv_int16 = [32537, 33153]
 macc_out_viv_int16 = 32836
 bias_out_viv_int16 = 16411
 neur_out_viv_int16 = 16411
+
+### Simulation results 22 July ###
+## Testing Neuron with regen - digit 8 ##
+add1_viv_int16 = [32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 31879, 33375, 32811, 32767, 32767, 32767, 32767, 26671, 41171, 34417, 32767, 32767, 32767, 32767, 25941, 33655, 33743, 32767, 32767, 32767, 32767, 26339, 38523, 34375, 32767, 32767, 32767, 32767, 27587, 34625, 32703, 32767, 32767, 32767, 31887, 27993, 32875, 32767, 32767, 32767, 32815, 32445, 28833, 32767, 32767, 32767, 32767, 32767, 35789, 29889, 32767, 32767, 32767, 32767, 32979, 34549, 32243, 32767, 32767, 32767, 32767, 37303, 38363, 32947, 32767, 32767, 32767, 32767, 33715, 32281, 32831, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767]
+add2_viv_int16 = [32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32323, 33093, 32767, 32767, 33921, 33591, 32767, 29355, 33697, 32767, 32767, 32429, 33571, 32767, 30177, 33663, 32767, 32327, 30435, 32767, 32791, 30637, 32767, 32767, 34279, 31327, 32767, 32873, 33397, 32767, 32767, 37833, 32857, 32767, 33241, 32555, 32767, 32767, 32767, 32767, 32767]
+add3_viv_int16 = [32767, 32767, 32767, 32767, 32707, 32767, 33757, 31061, 33233, 32597, 33167, 31917, 32547, 31597, 31713, 32767, 32805, 32819, 33081, 35301, 32813, 32895, 32767, 32767]
+add4_viv_int16 = [32767, 32767, 32735, 32409, 32911, 32543, 32073, 32239, 32811, 34189, 32849, 32767]
+add5_viv_int16 = [32767, 32571, 32729, 32153, 33495, 32807]
+add6_viv_int16 = [32669, 32423, 33151]
+add7_viv_int16 = [32543, 32955]
+macc_out_viv_int16 = 32745
+bias_out_viv_int16 = 16345
+neur_out_viv_int16 = 32768
 
 
 
@@ -106,8 +125,9 @@ bias_out_viv_int16 = 32711
 neur_out_viv_int16 = 32711
 """
 
-
+"""
 #### Change viv values to point to ILA values #####
+#### Comment out to use simulated values ####
 add1_viv_int16 = add1_res_bin_ila_int16.values.tolist()[0]
 add2_viv_int16 = add2_res_bin_ila_int16.values.tolist()[0]
 add3_viv_int16 = add3_res_bin_ila_int16.values.tolist()[0]
@@ -117,10 +137,9 @@ add6_viv_int16 = add6_res_bin_ila_int16.values.tolist()[0]
 add7_viv_int16 = add7_res_bin_ila_int16.values.tolist()[0]
 macc_out_viv_int16 = macc_out_bin_ila_int16.values.tolist()[0]
 bias_out_viv_int16 = bias_out_bin_ila_int16.values.tolist()[0]
-neur_out_viv_int16 = bias_out_bin_ila_int16.values.tolist()[0]    ## Neur_out set to bias_out
+neur_out_viv_int16 = relu_out_bin_ila_int16.values.tolist()[0]
 ###################################################
-
-print( add7_viv_int16 )
+"""
 
 # Convert vivado values to floats
 add1_viv_float = [prob_int16_to_bipolar(x) for x in add1_viv_int16]
@@ -253,6 +272,24 @@ plt.scatter(x_values, add7_viv_float, label="vivado values")
 plt.legend()
 plt.grid()
 
+# Macc out
+x_values = [0]
+plt.subplot(3,3,8)
+plt.title("MAC output")
+plt.bar(x_values, macc_out_pyt_float, label="python values")
+plt.scatter(x_values, macc_out_viv_float, label="vivado values")
+plt.legend()
+plt.grid()
+
+# Bias out
+x_values = [0]
+plt.subplot(3,3,9)
+plt.title("Bias output")
+plt.bar(x_values, bias_out_pyt_float, label="python values")
+plt.scatter(x_values, bias_out_viv_float, label="vivado values")
+plt.legend()
+plt.grid()
+
 #plt.show()
 
 ## Plot MAE for each stage
@@ -289,11 +326,8 @@ print(f"Neur_out python float: {neur_out_pyt_float}")
 
 
 ######## Test accuracy of adders and multipliers from vivado results #########
-# Express outputs as percentage (relative) error i.e. e = (|true-actual|/true)*100
-
 # Adder 2 stage
 add2_true = [(add1_viv_float[i*2]+add1_viv_float[(i*2)+1])/2 for i in range(49)]
-
 plt.figure(3)
 plt.title("Add2 Expected vs. actual based on actual inputs")
 x_vals = [i for i in range(len(add2_viv_float))]
@@ -302,14 +336,53 @@ plt.scatter(x_vals, add2_viv_float, label="actual")
 plt.grid()
 plt.legend()
 
-# Adder 2 stage
+# Adder 3 stage
 add3_true = [(add2_viv_float[i*2]+add2_viv_float[(i*2)+1])/2 for i in range(24)]
-
 plt.figure(4)
 plt.title("Add3 Expected vs. actual based on actual inputs")
 x_vals = [i for i in range(len(add3_viv_float))]
 plt.bar(x_vals, add3_true, label="expected")
 plt.scatter(x_vals, add3_viv_float, label="actual")
+plt.grid()
+plt.legend()
+
+# Adder 4 stage
+add4_true = [(add3_viv_float[i*2]+add3_viv_float[(i*2)+1])/2 for i in range(12)]
+plt.figure(5)
+plt.title("Add4 Expected vs. actual based on actual inputs")
+x_vals = [i for i in range(len(add4_viv_float))]
+plt.bar(x_vals, add4_true, label="expected")
+plt.scatter(x_vals, add4_viv_float, label="actual")
+plt.grid()
+plt.legend()
+
+# Adder 5 stage
+add5_true = [(add4_viv_float[i*2]+add4_viv_float[(i*2)+1])/2 for i in range(6)]
+plt.figure(6)
+plt.title("Add5 Expected vs. actual based on actual inputs")
+x_vals = [i for i in range(len(add5_viv_float))]
+plt.bar(x_vals, add5_true, label="expected")
+plt.scatter(x_vals, add5_viv_float, label="actual")
+plt.grid()
+plt.legend()
+
+# Adder 6 stage
+add6_true = [(add5_viv_float[i*2]+add5_viv_float[(i*2)+1])/2 for i in range(3)]
+plt.figure(7)
+plt.title("Add6 Expected vs. actual based on actual inputs")
+x_vals = [i for i in range(len(add6_viv_float))]
+plt.bar(x_vals, add6_true, label="expected")
+plt.scatter(x_vals, add6_viv_float, label="actual")
+plt.grid()
+plt.legend()
+
+# Adder 7 stage
+add7_true = [(add6_viv_float[0]+add6_viv_float[1])/2, (add6_viv_float[2]+add2_viv_float[48]/16)/2 ]
+plt.figure(8)
+plt.title("Add7 Expected vs. actual based on actual inputs")
+x_vals = [i for i in range(len(add7_viv_float))]
+plt.bar(x_vals, add7_true, label="expected")
+plt.scatter(x_vals, add7_viv_float, label="actual")
 plt.grid()
 plt.legend()
 

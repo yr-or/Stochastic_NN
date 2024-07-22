@@ -1,7 +1,19 @@
 
 
-module NeuronL2_synth(
-    input clk
+module NeuronL2_regen_tb(
+    input clk,
+    input reset,
+    input [3:0] digit_sel,
+
+    output [15:0] add1_res_bin [0:97],
+    output [15:0] add2_res_bin [0:48],
+    output [15:0] add3_res_bin [0:23],
+    output [15:0] add4_res_bin [0:11],
+    output [15:0] add5_res_bin [0:5],
+    output [15:0] add6_res_bin [0:2],
+    output [15:0] add7_res_bin [0:1],
+
+    output done
     );
 
     localparam NUM_INPS = 196;
@@ -49,7 +61,7 @@ module NeuronL2_synth(
     // Inputs to SNGs
     reg [15:0] LFSR_inps_seed = 16'd25645;
     reg [15:0] LFSR_wghts_seed = 16'd57842;
-    reg [15:0] LFSR_bias_seed = 16'd37483;
+    reg [15:0] LFSR_bias_seed = 16'd19564;
 
     // SNGs -> Neuron
     wire input_data_stoch [0:NUM_INPS-1];
@@ -72,16 +84,6 @@ module NeuronL2_synth(
     // STB outputs
     wire [15:0] macc_out_bin;
     wire [15:0] bias_out_bin;
-    wire done;
-    // debug wires
-    wire [15:0] mul_res_bin  [0:195];
-    wire [15:0] add1_res_bin [0:97];
-    wire [15:0] add2_res_bin [0:48];
-    wire [15:0] add3_res_bin [0:23];
-    wire [15:0] add4_res_bin [0:11];
-    wire [15:0] add5_res_bin [0:5];
-    wire [15:0] add6_res_bin [0:2];
-    wire [15:0] add7_res_bin [0:1];
 
 
 
@@ -126,7 +128,7 @@ module NeuronL2_synth(
     /////////////// SNGs for adder select lines //////////////////
     // Wire array for adder stages and bias, i.e. add1, add2, ... add8, add_bias
     wire add_sel_stoch [0:13];
-    reg [15:0] adder_seeds [0:13] = '{49449, 65515, 49141, 34104, 65172, 23739, 62006, 39009, 47385, 20948, 19473, 48533, 29342, 19378};
+    reg [15:0] adder_seeds [0:13] = '{49449, 65515, 49141, 34104, 65172, 23739, 62006, 19548, 47385, 20948, 19473, 48533, 29342, 19378};
 
     generate
         for (i=0; i<14; i=i+1) begin
@@ -134,7 +136,7 @@ module NeuronL2_synth(
                 .clk                (clk),
                 .reset              (reset),
                 .seed               (adder_seeds[i]),
-                .prob               (16'h8000),     // 0.5
+                .prob               (16'h8000),         // 0.5 unipolar, 0 bipolar
                 .stoch_num          (add_sel_stoch[i])
             );
         end
@@ -165,6 +167,38 @@ module NeuronL2_synth(
     );
 
 
+    /////////////////  Regen L2 code //////////////////////
+    reg [15:0] relu_out_bin;
+    wire relu_out_stoch;
+
+    // Input all values to STBs
+    StochToBin16 STB_bias(
+        .clk                (clk),
+        .reset              (reset),
+        .enable             (1'b1),
+        .bit_stream         (bias_out_stoch),
+        .bin_number         (bias_out_bin)
+    );
+
+    // Apply ReLU function, using int16 bipolar representation**
+    always @(*) begin
+        if (bias_out_bin >= 16'd32768) begin
+            relu_out_bin = bias_out_bin;
+        end else begin
+            relu_out_bin = 16'd32768;         // Changed from 0 to 32768 for bipolar 0
+        end
+    end
+
+    // Output back in stochastic form
+    StochNumGen16 SNG(
+        .clk                    (clk),
+        .reset                  (reset),
+        .seed                   (16'd47338),
+        .prob                   (relu_out_bin),
+        .stoch_num              (relu_out_stoch)
+    );
+    ////////////////////////////////////////
+
 
     // STBs
     StochToBin16 STB_macc (
@@ -175,40 +209,7 @@ module NeuronL2_synth(
         .bin_number             (macc_out_bin),
         .done                   (done)
     );
-    StochToBin16 STB_bias (
-        .clk                    (clk),
-        .reset                  (reset),
-        .enable                 (1'b1),
-        .bit_stream             (bias_out_stoch),
-        .bin_number             (bias_out_bin)
-    );
 
-    // STB for mul results
-    generate
-        for (i=0; i<196; i=i+1) begin
-            StochToBin16 stb_mul(
-                .clk                (clk),
-                .reset              (reset),
-                .enable             (1'b1),
-                .bit_stream         (mul_res_stoch[i]),
-                .bin_number         (mul_res_bin[i])
-            );
-        end
-    endgenerate
-
-    // STB for inps
-    wire [15:0] inps_res_bin [0:195];
-    generate
-        for (i=0; i<196; i=i+1) begin
-            StochToBin16 stb_inps(
-                .clk                (clk),
-                .reset              (reset),
-                .enable             (1'b1),
-                .bit_stream         (input_data_stoch[i]),
-                .bin_number         (inps_res_bin[i])
-            );
-        end
-    endgenerate
 
     //////// STBs for adder stages result /////////
     // Consts
@@ -296,223 +297,6 @@ module NeuronL2_synth(
             );
         end
     endgenerate
-
-
-    /////////////////////// VIO and ILA ///////////////////////
-    vio_1 vio(
-        .clk                    (clk),
-        .probe_out0             (reset),
-        .probe_out1             (digit_sel)
-    );
-    ila_1 ila(
-        .clk                    (clk),
-        .probe0                 (reset),
-        .probe1                 (done),
-        .probe2                 (macc_out_bin),
-        .probe3                 (bias_out_bin),
-        // Add_1
-        .probe4                 (add1_res_bin[0]),
-        .probe5                 (add1_res_bin[1]),
-        .probe6                 (add1_res_bin[2]),
-        .probe7                 (add1_res_bin[3]),
-        .probe8                 (add1_res_bin[4]),
-        .probe9                 (add1_res_bin[5]),
-        .probe10                 (add1_res_bin[6]),
-        .probe11                 (add1_res_bin[7]),
-        .probe12                 (add1_res_bin[8]),
-        .probe13                 (add1_res_bin[9]),
-        .probe14                 (add1_res_bin[10]),
-        .probe15                 (add1_res_bin[11]),
-        .probe16                 (add1_res_bin[12]),
-        .probe17                 (add1_res_bin[13]),
-        .probe18                 (add1_res_bin[14]),
-        .probe19                 (add1_res_bin[15]),
-        .probe20                 (add1_res_bin[16]),
-        .probe21                 (add1_res_bin[17]),
-        .probe22                 (add1_res_bin[18]),
-        .probe23                 (add1_res_bin[19]),
-        .probe24                 (add1_res_bin[20]),
-        .probe25                 (add1_res_bin[21]),
-        .probe26                 (add1_res_bin[22]),
-        .probe27                 (add1_res_bin[23]),
-        .probe28                 (add1_res_bin[24]),
-        .probe29                 (add1_res_bin[25]),
-        .probe30                 (add1_res_bin[26]),
-        .probe31                 (add1_res_bin[27]),
-        .probe32                 (add1_res_bin[28]),
-        .probe33                 (add1_res_bin[29]),
-        .probe34                 (add1_res_bin[30]),
-        .probe35                 (add1_res_bin[31]),
-        .probe36                 (add1_res_bin[32]),
-        .probe37                 (add1_res_bin[33]),
-        .probe38                 (add1_res_bin[34]),
-        .probe39                 (add1_res_bin[35]),
-        .probe40                 (add1_res_bin[36]),
-        .probe41                 (add1_res_bin[37]),
-        .probe42                 (add1_res_bin[38]),
-        .probe43                 (add1_res_bin[39]),
-        .probe44                 (add1_res_bin[40]),
-        .probe45                 (add1_res_bin[41]),
-        .probe46                 (add1_res_bin[42]),
-        .probe47                 (add1_res_bin[43]),
-        .probe48                 (add1_res_bin[44]),
-        .probe49                 (add1_res_bin[45]),
-        .probe50                 (add1_res_bin[46]),
-        .probe51                 (add1_res_bin[47]),
-        .probe52                 (add1_res_bin[48]),
-        .probe53                 (add1_res_bin[49]),
-        .probe54                 (add1_res_bin[50]),
-        .probe55                 (add1_res_bin[51]),
-        .probe56                 (add1_res_bin[52]),
-        .probe57                 (add1_res_bin[53]),
-        .probe58                 (add1_res_bin[54]),
-        .probe59                 (add1_res_bin[55]),
-        .probe60                 (add1_res_bin[56]),
-        .probe61                 (add1_res_bin[57]),
-        .probe62                 (add1_res_bin[58]),
-        .probe63                 (add1_res_bin[59]),
-        .probe64                 (add1_res_bin[60]),
-        .probe65                 (add1_res_bin[61]),
-        .probe66                 (add1_res_bin[62]),
-        .probe67                 (add1_res_bin[63]),
-        .probe68                 (add1_res_bin[64]),
-        .probe69                 (add1_res_bin[65]),
-        .probe70                 (add1_res_bin[66]),
-        .probe71                 (add1_res_bin[67]),
-        .probe72                 (add1_res_bin[68]),
-        .probe73                 (add1_res_bin[69]),
-        .probe74                 (add1_res_bin[70]),
-        .probe75                 (add1_res_bin[71]),
-        .probe76                 (add1_res_bin[72]),
-        .probe77                 (add1_res_bin[73]),
-        .probe78                 (add1_res_bin[74]),
-        .probe79                 (add1_res_bin[75]),
-        .probe80                 (add1_res_bin[76]),
-        .probe81                 (add1_res_bin[77]),
-        .probe82                 (add1_res_bin[78]),
-        .probe83                 (add1_res_bin[79]),
-        .probe84                 (add1_res_bin[80]),
-        .probe85                 (add1_res_bin[81]),
-        .probe86                 (add1_res_bin[82]),
-        .probe87                 (add1_res_bin[83]),
-        .probe88                 (add1_res_bin[84]),
-        .probe89                 (add1_res_bin[85]),
-        .probe90                 (add1_res_bin[86]),
-        .probe91                 (add1_res_bin[87]),
-        .probe92                 (add1_res_bin[88]),
-        .probe93                 (add1_res_bin[89]),
-        .probe94                 (add1_res_bin[90]),
-        .probe95                 (add1_res_bin[91]),
-        .probe96                 (add1_res_bin[92]),
-        .probe97                 (add1_res_bin[93]),
-        .probe98                 (add1_res_bin[94]),
-        .probe99                 (add1_res_bin[95]),
-        .probe100                 (add1_res_bin[96]),
-        .probe101                 (add1_res_bin[97]),
-        // Add_2
-        .probe102                 (add2_res_bin[0]),
-        .probe103                 (add2_res_bin[1]),
-        .probe104                 (add2_res_bin[2]),
-        .probe105                 (add2_res_bin[3]),
-        .probe106                 (add2_res_bin[4]),
-        .probe107                 (add2_res_bin[5]),
-        .probe108                 (add2_res_bin[6]),
-        .probe109                 (add2_res_bin[7]),
-        .probe110                 (add2_res_bin[8]),
-        .probe111                 (add2_res_bin[9]),
-        .probe112                 (add2_res_bin[10]),
-        .probe113                 (add2_res_bin[11]),
-        .probe114                 (add2_res_bin[12]),
-        .probe115                 (add2_res_bin[13]),
-        .probe116                 (add2_res_bin[14]),
-        .probe117                 (add2_res_bin[15]),
-        .probe118                 (add2_res_bin[16]),
-        .probe119                 (add2_res_bin[17]),
-        .probe120                 (add2_res_bin[18]),
-        .probe121                 (add2_res_bin[19]),
-        .probe122                 (add2_res_bin[20]),
-        .probe123                 (add2_res_bin[21]),
-        .probe124                 (add2_res_bin[22]),
-        .probe125                 (add2_res_bin[23]),
-        .probe126                 (add2_res_bin[24]),
-        .probe127                 (add2_res_bin[25]),
-        .probe128                 (add2_res_bin[26]),
-        .probe129                 (add2_res_bin[27]),
-        .probe130                 (add2_res_bin[28]),
-        .probe131                 (add2_res_bin[29]),
-        .probe132                 (add2_res_bin[30]),
-        .probe133                 (add2_res_bin[31]),
-        .probe134                 (add2_res_bin[32]),
-        .probe135                 (add2_res_bin[33]),
-        .probe136                 (add2_res_bin[34]),
-        .probe137                 (add2_res_bin[35]),
-        .probe138                 (add2_res_bin[36]),
-        .probe139                 (add2_res_bin[37]),
-        .probe140                 (add2_res_bin[38]),
-        .probe141                 (add2_res_bin[39]),
-        .probe142                 (add2_res_bin[40]),
-        .probe143                 (add2_res_bin[41]),
-        .probe144                 (add2_res_bin[42]),
-        .probe145                 (add2_res_bin[43]),
-        .probe146                 (add2_res_bin[44]),
-        .probe147                 (add2_res_bin[45]),
-        .probe148                 (add2_res_bin[46]),
-        .probe149                 (add2_res_bin[47]),
-        .probe150                 (add2_res_bin[48]),
-        // Add_3
-        .probe151                 (add3_res_bin[0]),
-        .probe152                 (add3_res_bin[1]),
-        .probe153                 (add3_res_bin[2]),
-        .probe154                 (add3_res_bin[3]),
-        .probe155                 (add3_res_bin[4]),
-        .probe156                 (add3_res_bin[5]),
-        .probe157                 (add3_res_bin[6]),
-        .probe158                 (add3_res_bin[7]),
-        .probe159                 (add3_res_bin[8]),
-        .probe160                 (add3_res_bin[9]),
-        .probe161                 (add3_res_bin[10]),
-        .probe162                 (add3_res_bin[11]),
-        .probe163                 (add3_res_bin[12]),
-        .probe164                 (add3_res_bin[13]),
-        .probe165                 (add3_res_bin[14]),
-        .probe166                 (add3_res_bin[15]),
-        .probe167                 (add3_res_bin[16]),
-        .probe168                 (add3_res_bin[17]),
-        .probe169                 (add3_res_bin[18]),
-        .probe170                 (add3_res_bin[19]),
-        .probe171                 (add3_res_bin[20]),
-        .probe172                 (add3_res_bin[21]),
-        .probe173                 (add3_res_bin[22]),
-        .probe174                 (add3_res_bin[23]),
-        // Add_4
-        .probe175                 (add4_res_bin[0]),
-        .probe176                 (add4_res_bin[1]),
-        .probe177                 (add4_res_bin[2]),
-        .probe178                 (add4_res_bin[3]),
-        .probe179                 (add4_res_bin[4]),
-        .probe180                 (add4_res_bin[5]),
-        .probe181                 (add4_res_bin[6]),
-        .probe182                 (add4_res_bin[7]),
-        .probe183                 (add4_res_bin[8]),
-        .probe184                 (add4_res_bin[9]),
-        .probe185                 (add4_res_bin[10]),
-        .probe186                 (add4_res_bin[11]),
-        // Add_5
-        .probe187                 (add5_res_bin[0]),
-        .probe188                 (add5_res_bin[1]),
-        .probe189                 (add5_res_bin[2]),
-        .probe190                 (add5_res_bin[3]),
-        .probe191                 (add5_res_bin[4]),
-        .probe192                 (add5_res_bin[5]),
-        // Add_6
-        .probe193                 (add6_res_bin[0]),
-        .probe194                 (add6_res_bin[1]),
-        .probe195                 (add6_res_bin[2]),
-        // Add_7
-        .probe196                 (add7_res_bin[0]),
-        .probe197                 (add7_res_bin[1])
-    );
-
 
 
 endmodule

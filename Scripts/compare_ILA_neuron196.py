@@ -70,7 +70,7 @@ add5_viv_int16 = [32767, 32569, 32729, 32155, 33505, 32811]
 add6_viv_int16 = [32667, 32417, 33531]
 add7_viv_int16 = [32537, 33153]
 macc_out_viv_int16 = 32836
-bias_out_viv_int16 = 16411
+bias_out_viv_int16 = 16393  #16411
 neur_out_viv_int16 = 16411
 
 ### Simulation results 22 July ###
@@ -82,7 +82,7 @@ add4_viv_int16 = [32767, 32767, 32735, 32409, 32911, 32543, 32073, 32239, 32811,
 add5_viv_int16 = [32767, 32571, 32729, 32153, 33495, 32807]
 add6_viv_int16 = [32669, 32423, 33151]
 add7_viv_int16 = [32543, 32955]
-macc_out_viv_int16 = 32745
+macc_out_viv_int16 = 32748
 bias_out_viv_int16 = 16345
 neur_out_viv_int16 = 32768
 
@@ -327,6 +327,7 @@ print(f"Neur_out python float: {neur_out_pyt_float}")
 
 ######## Test accuracy of adders and multipliers from vivado results #########
 # Adder 2 stage
+"""
 add2_true = [(add1_viv_float[i*2]+add1_viv_float[(i*2)+1])/2 for i in range(49)]
 plt.figure(3)
 plt.title("Add2 Expected vs. actual based on actual inputs")
@@ -365,10 +366,11 @@ plt.bar(x_vals, add5_true, label="expected")
 plt.scatter(x_vals, add5_viv_float, label="actual")
 plt.grid()
 plt.legend()
+"""
 
 # Adder 6 stage
 add6_true = [(add5_viv_float[i*2]+add5_viv_float[(i*2)+1])/2 for i in range(3)]
-plt.figure(7)
+plt.figure(3)
 plt.title("Add6 Expected vs. actual based on actual inputs")
 x_vals = [i for i in range(len(add6_viv_float))]
 plt.bar(x_vals, add6_true, label="expected")
@@ -378,11 +380,35 @@ plt.legend()
 
 # Adder 7 stage
 add7_true = [(add6_viv_float[0]+add6_viv_float[1])/2, (add6_viv_float[2]+add2_viv_float[48]/16)/2 ]
-plt.figure(8)
+plt.figure(4)
 plt.title("Add7 Expected vs. actual based on actual inputs")
 x_vals = [i for i in range(len(add7_viv_float))]
 plt.bar(x_vals, add7_true, label="expected")
 plt.scatter(x_vals, add7_viv_float, label="actual")
+plt.grid()
+plt.legend()
+
+# Macc out stage
+macc_out_true = [(add7_viv_float[0]+add7_viv_float[1])/2]
+plt.figure(5)
+plt.title("MAC out Expected vs. actual based on actual inputs")
+x_vals = [i for i in range(len(macc_out_true))]
+plt.bar(x_vals, macc_out_true, label="expected")
+plt.scatter(x_vals, macc_out_viv_float, label="actual")
+plt.grid()
+plt.legend()
+
+# Bias out stage
+bias_neur0_int16 = 32773
+bias_neur0_float = prob_int16_to_bipolar(bias_neur0_int16)
+
+bias_out_true = [(macc_out_viv_float + bias_neur0_float)/2]
+print(bias_out_true)
+plt.figure(6)
+plt.title("Bias out Expected vs. actual based on actual inputs")
+x_vals = [i for i in range(len(bias_out_true))]
+plt.bar(x_vals, bias_out_true, label="expected")
+plt.scatter(x_vals, bias_out_viv_float, label="actual")
 plt.grid()
 plt.legend()
 

@@ -207,8 +207,8 @@ def get_L3_weights_16bit():
 
 #get_test_data()
 
-get_test_data_16bit()
-#get_L2_biases_16bit()
+#get_test_data_16bit()
+get_L2_biases_16bit()
 #get_L2_weights_16bit()
 #get_L3_biases_16bit()
 #get_L3_weights_16bit()

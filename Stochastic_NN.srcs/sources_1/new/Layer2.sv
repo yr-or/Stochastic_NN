@@ -114,16 +114,16 @@ module Layer2(
 
     /////////////// SNGs for adder select lines //////////////////
     // Wire array for adder stages and bias, i.e. add1, add2, ... add8, add_bias
-    wire add_sel_stoch [0:8];
-    reg [15:0] adder_seeds [0:8] = '{49449, 65515, 49141, 34104, 65172, 23739, 62006, 39009, 47385};
+    wire add_sel_stoch [0:13];
+    reg [15:0] adder_seeds [0:13] = '{49449, 65515, 49141, 34104, 65172, 23739, 28394, 39009, 47385, 20948, 19473, 48533, 29342, 19378};
 
     generate
-        for (i=0; i<9; i=i+1) begin
+        for (i=0; i<14; i=i+1) begin
             StochNumGen16 SNG_add_sel(
                 .clk                (clk),
                 .reset              (reset),
                 .seed               (adder_seeds[i]),
-                .prob               (16'h8000),     // 0.5
+                .prob               (16'h8000),         // 0.5 unipolar, 0 bipolar
                 .stoch_num          (add_sel_stoch[i])
             );
         end

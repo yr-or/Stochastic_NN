@@ -13,7 +13,7 @@ import re
 iladata_neuron_all_digit8_trial3.csv"   # Working data for neuron non-regen
 Neur_regen_iladata.csv                  # Digit 8 neur regen data
 """
-file1 = "C:\\Users\\Rory\\Documents\\HDL\Stochastic_NN\\Outputs\\Neur_regen_digit0_iladata.csv"
+file1 = "C:\\Users\\Rory\\Documents\\HDL\Stochastic_NN\\Outputs\\Test_neur_regen\\Neur_regen_digit8_iladata.csv"
 
 df1 = pd.read_csv(file1)
 
@@ -70,11 +70,11 @@ add5_viv_int16 = [32767, 32569, 32729, 32155, 33505, 32811]
 add6_viv_int16 = [32667, 32417, 33531]
 add7_viv_int16 = [32537, 33153]
 macc_out_viv_int16 = 32836
-bias_out_viv_int16 = 16393  #16411
+bias_out_viv_int16 = 16411
 neur_out_viv_int16 = 16411
 
-### Simulation results 22 July ###
-## Testing Neuron with regen - digit 8 ##
+### Simulation results 23 July ###
+## Testing Neuron with regen - digit 8 - add_bias fix ##
 add1_viv_int16 = [32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 31879, 33375, 32811, 32767, 32767, 32767, 32767, 26671, 41171, 34417, 32767, 32767, 32767, 32767, 25941, 33655, 33743, 32767, 32767, 32767, 32767, 26339, 38523, 34375, 32767, 32767, 32767, 32767, 27587, 34625, 32703, 32767, 32767, 32767, 31887, 27993, 32875, 32767, 32767, 32767, 32815, 32445, 28833, 32767, 32767, 32767, 32767, 32767, 35789, 29889, 32767, 32767, 32767, 32767, 32979, 34549, 32243, 32767, 32767, 32767, 32767, 37303, 38363, 32947, 32767, 32767, 32767, 32767, 33715, 32281, 32831, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767]
 add2_viv_int16 = [32767, 32767, 32767, 32767, 32767, 32767, 32767, 32767, 32323, 33093, 32767, 32767, 33921, 33591, 32767, 29355, 33697, 32767, 32767, 32429, 33571, 32767, 30177, 33663, 32767, 32327, 30435, 32767, 32791, 30637, 32767, 32767, 34279, 31327, 32767, 32873, 33397, 32767, 32767, 37833, 32857, 32767, 33241, 32555, 32767, 32767, 32767, 32767, 32767]
 add3_viv_int16 = [32767, 32767, 32767, 32767, 32707, 32767, 33757, 31061, 33233, 32597, 33167, 31917, 32547, 31597, 31713, 32767, 32805, 32819, 33081, 35301, 32813, 32895, 32767, 32767]
@@ -83,8 +83,8 @@ add5_viv_int16 = [32767, 32571, 32729, 32153, 33495, 32807]
 add6_viv_int16 = [32669, 32423, 33151]
 add7_viv_int16 = [32543, 32955]
 macc_out_viv_int16 = 32748
-bias_out_viv_int16 = 16345
-neur_out_viv_int16 = 32768
+bias_out_viv_int16 = 32777
+neur_out_viv_int16 = 32777
 
 
 
@@ -125,7 +125,7 @@ bias_out_viv_int16 = 32711
 neur_out_viv_int16 = 32711
 """
 
-"""
+
 #### Change viv values to point to ILA values #####
 #### Comment out to use simulated values ####
 add1_viv_int16 = add1_res_bin_ila_int16.values.tolist()[0]
@@ -139,7 +139,7 @@ macc_out_viv_int16 = macc_out_bin_ila_int16.values.tolist()[0]
 bias_out_viv_int16 = bias_out_bin_ila_int16.values.tolist()[0]
 neur_out_viv_int16 = relu_out_bin_ila_int16.values.tolist()[0]
 ###################################################
-"""
+
 
 # Convert vivado values to floats
 add1_viv_float = [prob_int16_to_bipolar(x) for x in add1_viv_int16]
@@ -390,6 +390,11 @@ plt.legend()
 
 # Macc out stage
 macc_out_true = [(add7_viv_float[0]+add7_viv_float[1])/2]
+print(add7_viv_float[0])
+print(add7_viv_float[1])
+print(macc_out_true)
+print(macc_out_viv_float)
+
 plt.figure(5)
 plt.title("MAC out Expected vs. actual based on actual inputs")
 x_vals = [i for i in range(len(macc_out_true))]
@@ -403,7 +408,6 @@ bias_neur0_int16 = 32773
 bias_neur0_float = prob_int16_to_bipolar(bias_neur0_int16)
 
 bias_out_true = [(macc_out_viv_float + bias_neur0_float)/2]
-print(bias_out_true)
 plt.figure(6)
 plt.title("Bias out Expected vs. actual based on actual inputs")
 x_vals = [i for i in range(len(bias_out_true))]

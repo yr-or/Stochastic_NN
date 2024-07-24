@@ -84,7 +84,7 @@ def Neuron_L2(inputs, weights, bias):
         # Stage 7 - add remainder of add_3
         add_7_1 = (add_6[0] + add_6[1])/2
         ## add_2[48] should be scaled by 16 ##
-        add_7_2 = (add_6[2] + add_2[48])/2
+        add_7_2 = (add_6[2] + add_2[48]/16)/2
         add_7 = [add_7_1, add_7_2]          # Just for printing values
         # Last stage
         macc_out = (add_7_1 + add_7_2)/2
@@ -108,7 +108,7 @@ def Neuron_L2(inputs, weights, bias):
 
 
 
-test_data = test_data_digits["test_data_zero"]
+test_data = test_data_digits["test_data_eight"]
 
 ## Convert inputs to floats
 test_data_float = signed_int_arr_to_bi_prob(test_data)

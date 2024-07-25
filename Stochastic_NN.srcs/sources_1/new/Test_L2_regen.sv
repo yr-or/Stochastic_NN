@@ -1,5 +1,8 @@
 // Testbench with just L2 and regen outputs
 
+(* keep_hierarchy = "yes" *)
+(* DONT_TOUCH = "yes" *)
+(* keep = "true" *)
 module Test_L2_regen(
     input clk,
     input reset,
@@ -33,7 +36,7 @@ module Test_L2_regen(
             StochNumGen16 SNG_inps(
                 .clk                (clk),
                 .reset              (reset),
-                .seed               (16'd24415),
+                .seed               (16'd25645),
                 .prob               (input_data_bin[i]),
                 .stoch_num          (inps_stoch[i])
             );

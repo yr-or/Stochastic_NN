@@ -83,7 +83,7 @@ module Layer2(
             StochNumGen16 SNG_weights(
                 .clk                (clk),
                 .reset              (reset),
-                .seed               (16'd23414),             // Using same value for all
+                .seed               (16'd57842),             // Using same value for all
                 .prob               (W_ARRAY_L2_unique[i]),
                 .stoch_num          (weights_stoch[i])
             );
@@ -105,7 +105,7 @@ module Layer2(
             StochNumGen16 SNG_bias(
                 .clk                (clk),
                 .reset              (reset),
-                .seed               (16'd29384),       // Using same value for all
+                .seed               (16'd19564),       // Using same value for all
                 .prob               (B_ARRAY_L2[i]),
                 .stoch_num          (bias_stoch[i])
             );

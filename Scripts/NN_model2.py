@@ -216,7 +216,7 @@ def Neuron_L3(inputs, weights, bias):
 
 
 
-test_data = test_data_digits["test_data_one"]
+test_data = test_data_digits["test_data_zero"]
 
 NUM_NEUR_L2 = 32
 NUM_NEUR_L3 = 10

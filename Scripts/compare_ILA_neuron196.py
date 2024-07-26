@@ -13,7 +13,8 @@ import re
 iladata_neuron_all_digit8_trial3.csv"   # Working data for neuron non-regen
 Neur_regen_iladata.csv                  # Digit 8 neur regen data
 """
-file1 = "C:\\Users\\Rory\\Documents\\HDL\Stochastic_NN\\Outputs\\Test_neur_regen\\Neur_regen_digit8_iladata.csv"
+#file1 = "C:\\Users\\Rory\\Documents\\HDL\Stochastic_NN\\Outputs\\Test_neur_regen\\Neur_regen_digit8_iladata.csv"
+file1 = "C:\\Users\\Rory\\Documents\\HDL\Stochastic_NN\\Linux_outputs_stoch\\Neur0_regen_digit8_test7.csv"
 
 df1 = pd.read_csv(file1)
 

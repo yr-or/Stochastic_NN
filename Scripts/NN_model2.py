@@ -178,6 +178,7 @@ def Neuron_L3(inputs, weights, bias):
     """
     Inputs: float values representing stoch probs.
     Outputs: float values repr. stoch. prob.
+    Notes: Divides inputs and weights by 32, previous layer divided inputs and weights by 512
     """
 
     # Multiply
@@ -193,10 +194,10 @@ def Neuron_L3(inputs, weights, bias):
         macc_out = (add_4[0] + add_4[1])/2
     
         # Add bias
-        bias_out = (macc_out + (bias/8192) )/2
+        bias_out = (macc_out + (bias/16384) )/2  # 512x32 = 16384
     elif USE_SCALED_ADD:
         macc_out = sum(mul)/32
-        bias_out = (macc_out + (bias/8192) ) / 2
+        bias_out = (macc_out + (bias/16384) )/2
     else:
         macc_out = sum(mul)
         bias_out = macc_out + bias
@@ -216,7 +217,7 @@ def Neuron_L3(inputs, weights, bias):
 
 
 
-test_data = test_data_digits["test_data_zero"]
+test_data = test_data_digits["test_data_five"]
 
 NUM_NEUR_L2 = 32
 NUM_NEUR_L3 = 10
@@ -267,10 +268,6 @@ print(max_index)
 ############# DEBUG TESTS ##############
 ########################################
 
-print(L2_macc_out)
-# Convert to bipolar integers to compare to Verilog TB
-L2_macc_out_bi_int16 = [int(bipolar_to_prob(x)*65536) for x in L2_macc_out]
-print(L2_macc_out_bi_int16)
 
 
 

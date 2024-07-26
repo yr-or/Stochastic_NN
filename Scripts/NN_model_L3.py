@@ -96,6 +96,7 @@ def Neuron_L3(inputs, weights, bias):
     """
     Inputs: float values representing stoch probs.
     Outputs: float values repr. stoch. prob.
+    Notes: Divides inputs and weights by 32, previous layer divided inputs and weights by 512
     """
 
     # Multiply
@@ -111,18 +112,18 @@ def Neuron_L3(inputs, weights, bias):
         macc_out = (add_4[0] + add_4[1])/2
     
         # Add bias
-        bias_out = (macc_out + (bias/8192) )/2
+        bias_out = (macc_out + (bias/16384) )/2  # 512x32 = 16384
     elif USE_SCALED_ADD:
         macc_out = sum(mul)/32
-        bias_out = (macc_out + (bias/8192) ) / 2
+        bias_out = (macc_out + (bias/16384) )/2
     else:
         macc_out = sum(mul)
         bias_out = macc_out + bias
 
-    if USE_RELU:
-        neur_out = relu(bias_out)
-    else:
-        neur_out = sigmoid(bias_out)
+    #if USE_RELU:
+    #    neur_out = relu(bias_out)
+    #else:
+    #    neur_out = sigmoid(bias_out)
 
     neur_out = bias_out
 

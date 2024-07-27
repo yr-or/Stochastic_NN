@@ -183,7 +183,7 @@ def get_L3_biases_16bit():
 	# L3 Bias array
 	print("reg [7:0] B_ARRAY_L3 [0:NUM_NEURS-1] = '{ ", end='')
 	for val in B_ARRAY_L3:
-		val_bi_int_scaled = bipolar_to_prob_int16((val/256)/8192)
+		val_bi_int_scaled = bipolar_to_prob_int16((val/256)/128)		# CHanged from 8192 to 128 for regen upscale
 		print(f"{val_bi_int_scaled}, ", end='')
 	print(" };")
 
@@ -210,7 +210,7 @@ def get_L3_weights_16bit():
 #get_test_data_16bit()
 #get_L2_biases_16bit()
 #get_L2_weights_16bit()
-#get_L3_biases_16bit()
+get_L3_biases_16bit()
 #get_L3_weights_16bit()
 
 L2_weights_list = []

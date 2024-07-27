@@ -54,6 +54,17 @@ module Regenerate_L2(
         end
     end
 
+    // Apply upscaling
+    wire [15:0] L2_upscale_out_bin [0:NUM_NEUR-1];
+    generate
+        for (i=0; i<NUM_NEUR; i=i+1) begin
+            MultBi_int16(
+                .in_val                     (L2_relu_bin[i]),
+                .k                          (16'd128),
+                .out_val                    (L2_upscale_out_bin[i])
+            );
+        end
+    endgenerate
 
     // Output back in stochastic form
     reg [15:0] LFSR_seeds_regen [0:NUM_NEUR-1] = '{5316, 5970, 52892, 13882, 26082, 450, 57322, 62525, 29721, 53053, 49432, 26040, 58604, 27918, 14559, 36638, 50320, 16893, 2341, 45528, 42059, 47783, 35719, 3518, 18991, 1150, 16456, 58862, 761, 37439, 34275, 12522};
@@ -63,14 +74,14 @@ module Regenerate_L2(
                 .clk                    (clk),
                 .reset                  (reset),
                 .seed                   (LFSR_seeds_regen[i]),
-                .prob                   (L2_relu_bin[i]),
+                .prob                   (L2_upscale_out_bin[i]),
                 .stoch_num              (L2_regen_stoch[i])
             );
         end
     endgenerate
 
     assign done = &(done_stb);
-    assign L2_relu_out_bin = L2_relu_bin;
+    assign L2_relu_out_bin = L2_upscale_out_bin;    // Change to two outputs in future
     assign L2_bias_out_bin = L2_stb_out_bin;
 
 endmodule

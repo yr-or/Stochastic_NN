@@ -3,7 +3,7 @@
 (* keep_hierarchy = "yes" *)
 (* DONT_TOUCH = "yes" *)
 (* keep = "true" *)
-module Test_L2_regen_synth(
+module NN_top_synth(
     input sys_clk
     );
 
@@ -36,10 +36,10 @@ module Test_L2_regen_synth(
     );
 
 
-    // Regen_L2 outputs
-    wire [15:0] L2_neur_out_bin [0:31];
-    wire [15:0] L2_macc_out_bin [0:31];
-    wire [15:0] L2_bias_out_bin [0:31];
+    // outputs
+    wire [15:0] L2_res_bin [0:31];     // Upscaled and regend
+    wire [15:0] L3_res_bin [0:9];
+    wire done_regen;
     wire done;
 
     // Combinational block to select digit
@@ -60,7 +60,7 @@ module Test_L2_regen_synth(
     end
 
     // VIO
-    vio_0 vio_L2(
+    vio_0 vio_NN(
         .clk                    (fast_clk),
         .probe_out0             (reset),
         .probe_out1             (reset_clk),
@@ -68,86 +68,66 @@ module Test_L2_regen_synth(
     );
 
     // DUT
-    Test_L2_regen L2_regen(
+    NN_top NN_top(
         .clk                    (clk),
         .reset                  (reset),
-        .enable                 (1'b1),
         .input_data_bin         (input_data_bin),
-        .relu_results_bin       (L2_neur_out_bin),
-        .macc_results_bin       (L2_macc_out_bin),
-        .bias_results_bin       (L2_bias_out_bin),
+        .L2_res_bin             (L2_res_bin),
+        .L3_res_bin             (L3_res_bin),
+        .done_regen             (done_regen),
         .done                   (done)
     );
 
     // ILA
-    ila_0 ila_L2(
+    ila_2 ila_NN(
         .clk                    (fast_clk),
         .probe0                 (reset),
         .probe1                 (done),
-        .probe2                 (L2_neur_out_bin[0]),
-        .probe3                 (L2_neur_out_bin[1]),
-        .probe4                 (L2_neur_out_bin[2]),
-        .probe5                 (L2_neur_out_bin[3]),
-        .probe6                 (L2_neur_out_bin[4]),
-        .probe7                 (L2_neur_out_bin[5]),
-        .probe8                 (L2_neur_out_bin[6]),
-        .probe9                 (L2_neur_out_bin[7]),
-        .probe10                 (L2_neur_out_bin[8]),
-        .probe11                 (L2_neur_out_bin[9]),
-        .probe12                 (L2_neur_out_bin[10]),
-        .probe13                 (L2_neur_out_bin[11]),
-        .probe14                 (L2_neur_out_bin[12]),
-        .probe15                 (L2_neur_out_bin[13]),
-        .probe16                 (L2_neur_out_bin[14]),
-        .probe17                 (L2_neur_out_bin[15]),
-        .probe18                 (L2_neur_out_bin[16]),
-        .probe19                 (L2_neur_out_bin[17]),
-        .probe20                 (L2_neur_out_bin[18]),
-        .probe21                 (L2_neur_out_bin[19]),
-        .probe22                 (L2_neur_out_bin[20]),
-        .probe23                 (L2_neur_out_bin[21]),
-        .probe24                 (L2_neur_out_bin[22]),
-        .probe25                 (L2_neur_out_bin[23]),
-        .probe26                 (L2_neur_out_bin[24]),
-        .probe27                 (L2_neur_out_bin[25]),
-        .probe28                 (L2_neur_out_bin[26]),
-        .probe29                 (L2_neur_out_bin[27]),
-        .probe30                 (L2_neur_out_bin[28]),
-        .probe31                 (L2_neur_out_bin[29]),
-        .probe32                 (L2_neur_out_bin[30]),
-        .probe33                 (L2_neur_out_bin[31]),
-        .probe34                 (L2_macc_out_bin[0]),
-        .probe35                 (L2_macc_out_bin[1]),
-        .probe36                 (L2_macc_out_bin[2]),
-        .probe37                 (L2_macc_out_bin[3]),
-        .probe38                 (L2_macc_out_bin[4]),
-        .probe39                 (L2_macc_out_bin[5]),
-        .probe40                 (L2_macc_out_bin[6]),
-        .probe41                 (L2_macc_out_bin[7]),
-        .probe42                 (L2_macc_out_bin[8]),
-        .probe43                 (L2_macc_out_bin[9]),
-        .probe44                 (L2_macc_out_bin[10]),
-        .probe45                 (L2_macc_out_bin[11]),
-        .probe46                 (L2_macc_out_bin[12]),
-        .probe47                 (L2_macc_out_bin[13]),
-        .probe48                 (L2_macc_out_bin[14]),
-        .probe49                 (L2_macc_out_bin[15]),
-        .probe50                 (L2_macc_out_bin[16]),
-        .probe51                 (L2_macc_out_bin[17]),
-        .probe52                 (L2_macc_out_bin[18]),
-        .probe53                 (L2_macc_out_bin[19]),
-        .probe54                 (L2_macc_out_bin[20]),
-        .probe55                 (L2_macc_out_bin[21]),
-        .probe56                 (L2_macc_out_bin[22]),
-        .probe57                 (L2_macc_out_bin[23]),
-        .probe58                 (L2_macc_out_bin[24]),
-        .probe59                 (L2_macc_out_bin[25]),
-        .probe60                 (L2_macc_out_bin[26]),
-        .probe61                 (L2_macc_out_bin[27]),
-        .probe62                 (L2_macc_out_bin[28]),
-        .probe63                 (L2_macc_out_bin[29]),
-        .probe64                 (L2_macc_out_bin[30]),
-        .probe65                 (L2_macc_out_bin[31])
+        .probe2                 (done_regen),
+        // L2 outputs
+        .probe3                 (L2_res_bin[0]),
+        .probe4                 (L2_res_bin[1]),
+        .probe5                 (L2_res_bin[2]),
+        .probe6                 (L2_res_bin[3]),
+        .probe7                 (L2_res_bin[4]),
+        .probe8                 (L2_res_bin[5]),
+        .probe9                 (L2_res_bin[6]),
+        .probe10                (L2_res_bin[7]),
+        .probe11                 (L2_res_bin[8]),
+        .probe12                 (L2_res_bin[9]),
+        .probe13                 (L2_res_bin[10]),
+        .probe14                 (L2_res_bin[11]),
+        .probe15                 (L2_res_bin[12]),
+        .probe16                 (L2_res_bin[13]),
+        .probe17                 (L2_res_bin[14]),
+        .probe18                 (L2_res_bin[15]),
+        .probe19                 (L2_res_bin[16]),
+        .probe20                 (L2_res_bin[17]),
+        .probe21                 (L2_res_bin[18]),
+        .probe22                 (L2_res_bin[19]),
+        .probe23                 (L2_res_bin[20]),
+        .probe24                 (L2_res_bin[21]),
+        .probe25                 (L2_res_bin[22]),
+        .probe26                 (L2_res_bin[23]),
+        .probe27                 (L2_res_bin[24]),
+        .probe28                 (L2_res_bin[25]),
+        .probe29                 (L2_res_bin[26]),
+        .probe30                 (L2_res_bin[27]),
+        .probe31                 (L2_res_bin[28]),
+        .probe32                 (L2_res_bin[29]),
+        .probe33                 (L2_res_bin[30]),
+        .probe34                 (L2_res_bin[31]),
+        // L3 outputs
+        .probe35                 (L3_res_bin[0]),
+        .probe36                 (L3_res_bin[1]),
+        .probe37                 (L3_res_bin[2]),
+        .probe38                 (L3_res_bin[3]),
+        .probe39                 (L3_res_bin[4]),
+        .probe40                 (L3_res_bin[5]),
+        .probe41                 (L3_res_bin[6]),
+        .probe42                 (L3_res_bin[7]),
+        .probe43                 (L3_res_bin[8]),
+        .probe44                 (L3_res_bin[9])
     );
 
 endmodule

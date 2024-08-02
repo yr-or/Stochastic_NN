@@ -7,9 +7,8 @@ module Test_L2_regen(
     input clk,
     input reset,
     input [15:0] input_data_bin      [0:195],    // 196 8-bit values
-    //input [15:0] LFSR_inp_seed,
 
-    output [15:0] relu_results_bin     [0:31],     // 32 Neurons / outputs
+    output [15:0] relu_results_bin   [0:31],     // 32 Neurons / outputs
     output [15:0] macc_results_bin   [0:31],
     output [15:0] bias_results_bin   [0:31],
     output done

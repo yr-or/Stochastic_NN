@@ -5,13 +5,15 @@
 // Inputs: stochastic input data x32
 // Outputs: stochastic results x10
 
+(* keep_hierarchy = "yes" *)
+(* DONT_TOUCH = "yes" *)
+(* keep = "true" *)
 module Layer3(
     input clk,
     input reset,
     input data_in_stoch     [0:31],
     
-    output [15:0] results_bin [0:9],
-    output done
+    output results [0:9]
     );
 
     localparam NUM_NEUR = 10;
@@ -55,16 +57,14 @@ module Layer3(
     genvar i, j;
     generate
         for (i=0; i<NUM_WGHTS_UNQ; i=i+1) begin
-            for (j=0; j<NUM_INP; j=j+1) begin
-                // 123 SNGs for unique weights vals
-                StochNumGen16 SNG_weights(
-                    .clk                (clk),
-                    .reset              (reset),
-                    .seed               (16'd19563),       // Using same value for all
-                    .prob               (W_ARRAY_L3_unique[i]),
-                    .stoch_num          (weights_stoch[i])
-                );
-            end
+            // 123 SNGs for unique weights vals
+            StochNumGen16 SNG_weights(
+                .clk                (clk),
+                .reset              (reset),
+                .seed               (16'd19563),       // Using same value for all
+                .prob               (W_ARRAY_L3_unique[i]),
+                .stoch_num          (weights_stoch[i])
+            );
         end
     endgenerate
 
@@ -90,6 +90,25 @@ module Layer3(
         end
     endgenerate
 
+    /////////////// SNGs for adder select lines //////////////////
+    // Wire array for adder stages and bias, i.e. add1, add2, ... add8, add_bias
+    wire add_sel_stoch [0:5];
+    reg [15:0] adder_seeds [0:5] = '{14828, 48550, 59877, 26511, 4940, 15401};
+
+    generate
+        for (i=0; i<6; i=i+1) begin
+            StochNumGen16 SNG_add_sel(
+                .clk                (clk),
+                .reset              (reset),
+                .seed               (adder_seeds[i]),
+                .prob               (16'h8000),         // 0.5 unipolar, 0 bipolar
+                .stoch_num          (add_sel_stoch[i])
+            );
+        end
+    endgenerate
+    //////////////////////////////////////////////////////////////
+
+
     // Generate 10 neurons
     generate
         for (i=0; i<NUM_NEUR; i=i+1) begin
@@ -97,29 +116,16 @@ module Layer3(
                 .clk                (clk),
                 .reset              (reset),
                 .input_data         (data_in_stoch),
-                .weights            (weights_stoch[i]),
+                .weights            (W_ARRAY_wires[i]),     // Get weight value by index into LUT
                 .bias               (bias_stoch[i]),
+                .add_sel            (add_sel_stoch),
+
                 .result             (neurons_out_stoch[i]),
                 .macc_out           (maccs_out_stoch[i])
             );
         end
     endgenerate
 
-    // STB Layer 3 results DEBUG
-    reg [9:0] done_stb_array;
-    generate
-        for (i=0; i<NUM_NEUR; i=i+1) begin
-                StochToBin16 stb_L3( 
-                    .clk                (clk),
-                    .reset              (reset),
-                    .enable             (1'b1),
-                    .bit_stream         (neurons_out_stoch[i]),
-                    .bin_number         (results_bin[i]),
-                    .done               (done_stb_array[i])
-                );
-        end
-    endgenerate
-
-    assign done = &(done_stb_array);
+    assign results = neurons_out_stoch;
 
 endmodule

@@ -1,12 +1,16 @@
-// **Unipolar** stochastic multiply-accumulate module for 32 inputs
+// Bipolar stochastic multiply-accumulate module for 32 inputs
 // Input: 32 stochastic inputs, 32 stochastic weights
 // Output: 1 stochastic number = sum(x[i]*w[i])
 
+(* keep_hierarchy = "yes" *)
+(* DONT_TOUCH = "yes" *)
+(* keep = "true" *)
 module Macc32_L3(
     input clk,
     input reset,
     input input_data    [0:31],
     input weights       [0:31],
+    input add_sel       [0:4],
     
     output result
     );
@@ -40,13 +44,10 @@ module Macc32_L3(
 
     // Adders: Each adder stage shares a single LFSR seed
     // Adders stage 1 - 16 MUXes
-    reg [15:0] LFSR_add1_seed = 16'd19384;
     generate
         for (i=0; i<NUM_ADDS_1; i=i+1) begin
-            Adder add1 (
-                .clk                    (clk),
-                .reset                  (reset),
-                .seed                   (LFSR_add1_seed),
+            Adder_noSNG add1 (
+                .sel                    (add_sel[0]),
                 .stoch_num1             (mul_out[i*2]),
                 .stoch_num2             (mul_out[(i*2)+1]),
                 .result_stoch           (add1_res[i])
@@ -55,13 +56,10 @@ module Macc32_L3(
     endgenerate
 
     // Adders stage 2 - 8 MUXes
-    reg [15:0] LFSR_add2_seed = 16'd29343;
     generate
         for (i=0; i<NUM_ADDS_2; i=i+1) begin
-            Adder add2 (
-                .clk                    (clk),
-                .reset                  (reset),
-                .seed                   (LFSR_add2_seed),
+            Adder_noSNG add2 (
+                .sel                    (add_sel[1]),
                 .stoch_num1             (add1_res[i*2]),
                 .stoch_num2             (add1_res[(i*2)+1]),
                 .result_stoch           (add2_res[i])
@@ -70,13 +68,10 @@ module Macc32_L3(
     endgenerate
 
     // Adders stage 3 - 4 MUXes
-    reg [15:0] LFSR_add3_seed = 16'd18273;
     generate
         for (i=0; i<NUM_ADDS_3; i=i+1) begin
-            Adder add3 (
-                .clk                    (clk),
-                .reset                  (reset),
-                .seed                   (LFSR_add3_seed),
+            Adder_noSNG add3 (
+                .sel                    (add_sel[2]),
                 .stoch_num1             (add2_res[i*2]),
                 .stoch_num2             (add2_res[(i*2)+1]),
                 .result_stoch           (add3_res[i])
@@ -85,13 +80,10 @@ module Macc32_L3(
     endgenerate
 
     // Adders stage 4 - 2 MUXes
-    reg [15:0] LFSR_add4_seed = 16'd57483;
     generate
         for (i=0; i<NUM_ADDS_4; i=i+1) begin
-            Adder add4 (
-                .clk                    (clk),
-                .reset                  (reset),
-                .seed                   (LFSR_add4_seed),
+            Adder_noSNG add4 (
+                .sel                    (add_sel[3]),
                 .stoch_num1             (add3_res[i*2]),
                 .stoch_num2             (add3_res[(i*2)+1]),
                 .result_stoch           (add4_res[i])
@@ -100,10 +92,8 @@ module Macc32_L3(
     endgenerate
 
     // Last adder - 1 MUX
-    Adder add5 (
-        .clk                    (clk),
-        .reset                  (reset),
-        .seed                   (16'd28347),
+    Adder_noSNG add5 (
+        .sel                    (add_sel[4]),
         .stoch_num1             (add4_res[0]),
         .stoch_num2             (add4_res[1]),
         .result_stoch           (result)

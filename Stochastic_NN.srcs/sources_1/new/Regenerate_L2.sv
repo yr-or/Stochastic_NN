@@ -8,6 +8,7 @@
 module Regenerate_L2(
     input clk,
     input reset,
+    input enable,
     input L2_outs_stoch [0:31],
     
     output L2_regen_stoch [0:31],
@@ -34,7 +35,7 @@ module Regenerate_L2(
             StochToBin16 STB(
                 .clk                (clk),
                 .reset              (reset),
-                .enable             (1'b1),
+                .enable             (enable),
                 .bit_stream         (L2_outs_stoch[i]),
                 .bin_number         (L2_stb_out_bin[i]),
                 .done               (done_stb[i])
@@ -44,12 +45,14 @@ module Regenerate_L2(
 
     // Apply ReLU function, using int16 bipolar representation**
     integer j;
-    always @(*) begin
+    always @(posedge clk) begin
         for (j=0; j<NUM_NEUR; j=j+1) begin
-            if (L2_stb_out_bin[j] >= 16'd32768) begin
-                L2_relu_bin[j] = L2_stb_out_bin[j];
-            end else begin
-                L2_relu_bin[j] = 16'd32768;         // Changed from 0 to 32768 for bipolar 0
+            if (enable) begin
+                if (L2_stb_out_bin[j] >= 16'd32768) begin
+                    L2_relu_bin[j] <= L2_stb_out_bin[j];
+                end else begin
+                    L2_relu_bin[j] <= 16'd32768;         // Changed from 0 to 32768 for bipolar 0
+                end
             end
         end
     end
@@ -58,7 +61,7 @@ module Regenerate_L2(
     wire [15:0] L2_upscale_out_bin [0:NUM_NEUR-1];
     generate
         for (i=0; i<NUM_NEUR; i=i+1) begin
-            MultBi_int16(
+            MultBi_int16 mult_bin(
                 .in_val                     (L2_relu_bin[i]),
                 .k                          (16'd128),
                 .out_val                    (L2_upscale_out_bin[i])

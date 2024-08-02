@@ -75,7 +75,6 @@ module Macc196_L2(
     endgenerate
 
     // Adder_noSNGs stage 2 - 49 MUXes
-    reg [15:0] LFSR_add2_seed = 16'd2934;
     generate
         for (i=0; i<NUM_ADDS_2; i=i+1) begin
             Adder_noSNG add2 (
@@ -88,7 +87,6 @@ module Macc196_L2(
     endgenerate
 
     // Adder_noSNGs stage 3 - 24 MUXes
-    reg [15:0] LFSR_add3_seed = 16'd9384;
     generate
         for (i=0; i<NUM_ADDS_3; i=i+1) begin
             Adder_noSNG add3 (
@@ -101,7 +99,6 @@ module Macc196_L2(
     endgenerate
 
     // Adder_noSNGs stage 4 - 12 MUXes
-    reg [15:0] LFSR_add4_seed = 16'd1258;
     generate
         for (i=0; i<NUM_ADDS_4; i=i+1) begin
             Adder_noSNG add4 (

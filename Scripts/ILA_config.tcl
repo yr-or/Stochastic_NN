@@ -65,3 +65,4 @@ set_property -dict [list CONFIG.C_NUM_OF_PROBES {66} CONFIG.C_PROBE62_WIDTH {16}
 set_property -dict [list CONFIG.C_NUM_OF_PROBES {66} CONFIG.C_PROBE63_WIDTH {16}] [get_ips ila_0]
 set_property -dict [list CONFIG.C_NUM_OF_PROBES {66} CONFIG.C_PROBE64_WIDTH {16}] [get_ips ila_0]
 set_property -dict [list CONFIG.C_NUM_OF_PROBES {66} CONFIG.C_PROBE65_WIDTH {16}] [get_ips ila_0]
+set_property -dict [list CONFIG.C_NUM_OF_PROBES {66} CONFIG.C_PROBE65_WIDTH {16}] [get_ips ila_0]

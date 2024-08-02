@@ -10,7 +10,7 @@ Linux_path = "/user/masters/KilbyR/Project/Stochastic_NN_linux/Linux_outputs_sto
 
 ## Files
 #file1 = Linux_path + "L2_regen_digit3_test2.csv"
-file1 = Linux_path + "L2_regen_digit0_upscaled_test2.csv"
+file1 = Linux_path + "L2_regen_digit0_upscaled_test3.csv"
 
 ############### Read ILA data fom CSV ################
 df1 = pd.read_csv(file1)
@@ -34,6 +34,7 @@ L2_macc_out_ila_int16 = data.loc[:, "L2_macc_out_bin[0][15:0]":"L2_macc_out_bin[
 L2_neur_out_ila_int16 = L2_neur_out_ila_int16.values.tolist()[0]
 L2_macc_out_ila_int16 = L2_macc_out_ila_int16.values.tolist()[0]
 
+print(L2_neur_out_ila_int16)
 
 
 ## Python outputs

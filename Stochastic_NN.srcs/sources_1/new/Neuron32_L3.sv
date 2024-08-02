@@ -2,12 +2,16 @@
 // Only uses stochastic numbers
 // NOTE: Uses unipolar multiplier instead of bipolar
 
+(* keep_hierarchy = "yes" *)
+(* DONT_TOUCH = "yes" *)
+(* keep = "true" *)
 module Neuron32_L3(
     input clk,
     input reset,
     input input_data    [0:31],
     input weights       [0:31],
     input bias,
+    input add_sel       [0:5],
 
     output macc_out,    // Debug wire
     output bias_out,    // Debug wire
@@ -28,14 +32,14 @@ module Neuron32_L3(
         .reset              (reset),
         .input_data         (input_data),
         .weights            (weights),
+        .add_sel            (add_sel[0:4]),     // 4 for adder stages, 1 left for bias
+
         .result             (result_macc)
     );
 
     // Add bias - Mux adder
-    Adder add_bias(
-        .clk                (clk),
-        .reset              (reset),
-        .seed               (16'd28347),
+    Adder_noSNG add_bias(
+        .sel                (add_sel[5]),
         .stoch_num1         (result_macc),
         .stoch_num2         (bias),
         .result_stoch       (result_bias)

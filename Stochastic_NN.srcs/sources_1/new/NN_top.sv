@@ -14,7 +14,10 @@ module NN_top(
     output [15:0] L2_res_bin [0:31],    // Upscaled
     output [15:0] L3_res_bin [0:9],
     output done_regen,
-    output done
+    output done,
+    output [3:0] max_ind,
+    output or_out_dbg,
+    output [9:0] one_detec_dbg
     );
 
     // Consts
@@ -107,6 +110,17 @@ module NN_top(
             );
         end
     endgenerate
+
+    // Get max value
+    Max_Stoch max_stoch(
+        .clk                    (clk),
+        .reset                  (reset),
+        .L3_out_stoch           (L3_out_stoch),
+        .max                    (max_ind),
+        .or_out_dbg             (or_out_dbg),
+        .one_detec_dbg          (one_detec_dbg)
+    );
+
 
     assign done = &(done_STB_L3);
 

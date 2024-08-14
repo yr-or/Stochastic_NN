@@ -42,7 +42,7 @@ module NN_top_tb();
     // Apply test data in order, change LFSR seed each time to test
     initial begin
         reset = 1;
-        input_data_bin = test_data_zero;
+        input_data_bin = test_data_five;
         #30;
         reset = 0;
 

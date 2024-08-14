@@ -41,6 +41,11 @@ module NN_top_synth(
     wire [15:0] L3_res_bin [0:9];
     wire done_regen;
     wire done;
+    wire [3:0] digit_res;
+
+    // debug wires
+    wire or_out_dbg;
+    wire [9:0] one_detec_dbg;
 
     // Combinational block to select digit
     always @(*) begin
@@ -75,59 +80,33 @@ module NN_top_synth(
         .L2_res_bin             (L2_res_bin),
         .L3_res_bin             (L3_res_bin),
         .done_regen             (done_regen),
-        .done                   (done)
+        .done                   (done),
+        .max_ind                (digit_res),
+        .or_out_dbg             (or_out_dbg),
+        .one_detec_dbg          (one_detec_dbg)
     );
 
     // ILA
-    ila_2 ila_NN(
+    ila_4 ila_NN(
         .clk                    (fast_clk),
         .probe0                 (reset),
         .probe1                 (done),
         .probe2                 (done_regen),
-        // L2 outputs
-        .probe3                 (L2_res_bin[0]),
-        .probe4                 (L2_res_bin[1]),
-        .probe5                 (L2_res_bin[2]),
-        .probe6                 (L2_res_bin[3]),
-        .probe7                 (L2_res_bin[4]),
-        .probe8                 (L2_res_bin[5]),
-        .probe9                 (L2_res_bin[6]),
-        .probe10                (L2_res_bin[7]),
-        .probe11                 (L2_res_bin[8]),
-        .probe12                 (L2_res_bin[9]),
-        .probe13                 (L2_res_bin[10]),
-        .probe14                 (L2_res_bin[11]),
-        .probe15                 (L2_res_bin[12]),
-        .probe16                 (L2_res_bin[13]),
-        .probe17                 (L2_res_bin[14]),
-        .probe18                 (L2_res_bin[15]),
-        .probe19                 (L2_res_bin[16]),
-        .probe20                 (L2_res_bin[17]),
-        .probe21                 (L2_res_bin[18]),
-        .probe22                 (L2_res_bin[19]),
-        .probe23                 (L2_res_bin[20]),
-        .probe24                 (L2_res_bin[21]),
-        .probe25                 (L2_res_bin[22]),
-        .probe26                 (L2_res_bin[23]),
-        .probe27                 (L2_res_bin[24]),
-        .probe28                 (L2_res_bin[25]),
-        .probe29                 (L2_res_bin[26]),
-        .probe30                 (L2_res_bin[27]),
-        .probe31                 (L2_res_bin[28]),
-        .probe32                 (L2_res_bin[29]),
-        .probe33                 (L2_res_bin[30]),
-        .probe34                 (L2_res_bin[31]),
+        .probe3                 (digit_res),
         // L3 outputs
-        .probe35                 (L3_res_bin[0]),
-        .probe36                 (L3_res_bin[1]),
-        .probe37                 (L3_res_bin[2]),
-        .probe38                 (L3_res_bin[3]),
-        .probe39                 (L3_res_bin[4]),
-        .probe40                 (L3_res_bin[5]),
-        .probe41                 (L3_res_bin[6]),
-        .probe42                 (L3_res_bin[7]),
-        .probe43                 (L3_res_bin[8]),
-        .probe44                 (L3_res_bin[9])
+        .probe4                 (L3_res_bin[0]),
+        .probe5                 (L3_res_bin[1]),
+        .probe6                 (L3_res_bin[2]),
+        .probe7                 (L3_res_bin[3]),
+        .probe8                 (L3_res_bin[4]),
+        .probe9                 (L3_res_bin[5]),
+        .probe10                 (L3_res_bin[6]),
+        .probe11                 (L3_res_bin[7]),
+        .probe12                 (L3_res_bin[8]),
+        .probe13                 (L3_res_bin[9]),
+        // debug
+        .probe14                (or_out_dbg),
+        .probe15                (one_detec_dbg)
     );
 
 endmodule

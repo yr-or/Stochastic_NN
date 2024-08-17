@@ -43,7 +43,7 @@ module NN_top_tb();
     initial begin
         reset = 1;
         input_data_bin = test_data_five;
-        #30;
+        #75;    // clk cycle and a half
         reset = 0;
 
         
@@ -51,7 +51,7 @@ module NN_top_tb();
 
     // Clock gen
     always begin
-        #10;
+        #25;        // 20 MHz
         clk = ~clk;
     end
 

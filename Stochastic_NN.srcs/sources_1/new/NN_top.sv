@@ -16,8 +16,7 @@ module NN_top(
     output done_regen,
     output done,
     output [3:0] max_ind,
-    output or_out_dbg,
-    output [9:0] one_detec_dbg
+    output done_max
     );
 
     // Consts
@@ -37,19 +36,29 @@ module NN_top(
     // Stoch outputs of Layer3
     wire L3_out_stoch       [0:NUM_NEUR_L3-1]; 
 
-    // Generate stoachastic inputs - 196 SNGs
+    //////////////// Generate stoachastic inputs - 196 SNGs /////////////////////
+    // One LFSR for all
+    wire [15:0] rand_num_lfsr_inps;
+    LFSR16_Galois lfsr_inps(
+        .clk                    (clk),
+        .reset                  (reset),
+        .seed                   (16'd25645),
+        .parallel_out           (rand_num_lfsr_inps)
+    );
+
     genvar i;
     generate
         for (i=0; i<NUM_INP_L2; i=i+1) begin
-            StochNumGen16 SNG_inps(
+            SNG16_noLFSR SNG_inps(
                 .clk                (clk),
                 .reset              (reset),
-                .seed               (16'd25645),
+                .rand_num           (rand_num_lfsr_inps),
                 .prob               (input_data_bin[i]),
                 .stoch_num          (inps_stoch[i])
             );
         end
     endgenerate
+    //////////////////////////////////////////////////////////////////////////////
 
     // Connect to Layer2
     Layer2 L2(
@@ -112,13 +121,13 @@ module NN_top(
     endgenerate
 
     // Get max value
-    Max_Stoch max_stoch(
+    Max max(
         .clk                    (clk),
         .reset                  (reset),
-        .L3_out_stoch           (L3_out_stoch),
-        .max                    (max_ind),
-        .or_out_dbg             (or_out_dbg),
-        .one_detec_dbg          (one_detec_dbg)
+        .enable                 (~en_regen),
+        .stoch_array            (L3_out_stoch),
+        .max_ind                (max_ind),
+        .done                   (done_max)
     );
 
 

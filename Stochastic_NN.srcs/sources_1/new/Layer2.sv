@@ -75,15 +75,24 @@ module Layer2(
 
     wire W_ARRAY_wires [0:NUM_NEUR-1][0:NUM_INP-1];
 
-    // SNGs for weights and biases
+    /////////////////// SNGs for weights and biases //////////////////////
+    // One LFSR for weights
+    wire [15:0] rand_num_lfsr_wghts;
+    LFSR16_Galois lfsr_wghts(
+        .clk                    (clk),
+        .reset                  (reset),
+        .seed                   (16'd57842),
+        .parallel_out           (rand_num_lfsr_wghts)
+    );
+
     genvar i, j;
     generate
         for (i=0; i<NUM_WGHTS_UNQ; i=i+1) begin
             // 186 SNGs for unique weights vals
-            StochNumGen16 SNG_weights(
+            SNG16_noLFSR SNG_weights(
                 .clk                (clk),
                 .reset              (reset),
-                .seed               (16'd57842),             // Using same value for all
+                .rand_num           (rand_num_lfsr_wghts),
                 .prob               (W_ARRAY_L2_unique[i]),
                 .stoch_num          (weights_stoch[i])
             );
@@ -99,13 +108,22 @@ module Layer2(
         end
     endgenerate
 
+    // One LFSR for all biases
+    wire [15:0] rand_num_lfsr_biases;
+    LFSR16_Galois lfsr_biases(
+        .clk                    (clk),
+        .reset                  (reset),
+        .seed                   (16'd41362),
+        .parallel_out           (rand_num_lfsr_biases)
+    );
+
     generate
         // 32 SNGs for biases
         for (i=0; i<NUM_NEUR; i=i+1) begin
-            StochNumGen16 SNG_bias(
+            SNG16_noLFSR SNG_biases(
                 .clk                (clk),
                 .reset              (reset),
-                .seed               (16'd19564),       // Using same value for all
+                .rand_num           (rand_num_lfsr_biases),
                 .prob               (B_ARRAY_L2[i]),
                 .stoch_num          (bias_stoch[i])
             );

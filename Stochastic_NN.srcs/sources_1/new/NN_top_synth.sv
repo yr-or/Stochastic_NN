@@ -42,10 +42,7 @@ module NN_top_synth(
     wire done_regen;
     wire done;
     wire [3:0] digit_res;
-
-    // debug wires
-    wire or_out_dbg;
-    wire [9:0] one_detec_dbg;
+    wire done_max;
 
     // Combinational block to select digit
     always @(*) begin
@@ -82,8 +79,7 @@ module NN_top_synth(
         .done_regen             (done_regen),
         .done                   (done),
         .max_ind                (digit_res),
-        .or_out_dbg             (or_out_dbg),
-        .one_detec_dbg          (one_detec_dbg)
+        .done_max               (done_max)
     );
 
     // ILA
@@ -104,9 +100,7 @@ module NN_top_synth(
         .probe11                 (L3_res_bin[7]),
         .probe12                 (L3_res_bin[8]),
         .probe13                 (L3_res_bin[9]),
-        // debug
-        .probe14                (or_out_dbg),
-        .probe15                (one_detec_dbg)
+        .probe14                (done_max)
     );
 
 endmodule

@@ -53,15 +53,24 @@ module Layer3(
 
     wire W_ARRAY_wires [0:NUM_NEUR-1][0:NUM_INP-1];
 
-    // SNGs for weights and biases
+    ////////////////////// SNGs for weights and biases ///////////////////////////
+    // One LFSR for all 
+    wire [15:0] rand_num_lfsr_wghts;
+    LFSR16_Galois lfsr_wghts(
+        .clk                    (clk),
+        .reset                  (reset),
+        .seed                   (16'd19563),
+        .parallel_out           (rand_num_lfsr_wghts)
+    );
+
     genvar i, j;
     generate
         for (i=0; i<NUM_WGHTS_UNQ; i=i+1) begin
             // 123 SNGs for unique weights vals
-            StochNumGen16 SNG_weights(
+            SNG16_noLFSR SNG_weights(
                 .clk                (clk),
                 .reset              (reset),
-                .seed               (16'd19563),       // Using same value for all
+                .rand_num           (rand_num_lfsr_wghts),
                 .prob               (W_ARRAY_L3_unique[i]),
                 .stoch_num          (weights_stoch[i])
             );
@@ -77,18 +86,28 @@ module Layer3(
         end
     endgenerate
 
+    // Biases
+    wire [15:0] rand_num_lfsr_biases;
+    LFSR16_Galois lfsr_biases(
+        .clk                    (clk),
+        .reset                  (reset),
+        .seed                   (16'd28374),
+        .parallel_out           (rand_num_lfsr_biases)
+    );
+
     generate
         // 10 SNGs for biases
         for (i=0; i<NUM_NEUR; i=i+1) begin
-            StochNumGen16 SNG_bias(
+            SNG16_noLFSR SNG_bias(
                 .clk                (clk),
                 .reset              (reset),
-                .seed               (16'd28374),       // Using same value for all
+                .rand_num           (rand_num_lfsr_biases),
                 .prob               (B_ARRAY_L3[i]),
                 .stoch_num          (bias_stoch[i])
             );
         end
     endgenerate
+    ///////////////////////////////////////////////////////////////////////////////////
 
     /////////////// SNGs for adder select lines //////////////////
     // Wire array for adder stages and bias, i.e. add1, add2, ... add8, add_bias

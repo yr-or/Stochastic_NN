@@ -17,16 +17,24 @@ module Max (
     wire [15:0] stb_out [0:NUM_INP-1];
     wire [0:NUM_INP-1] done_stb_array;
     wire done_stb = &(done_stb_array);
-    reg en_stb;
+    reg en_ctr;
+
+    // Control logic
+    PulseDet pulsedet(
+        .clk                    (clk),
+        .reset                  (reset),
+        .pulse_wire             (done_stb),
+        .one_detec              (en_ctr)
+    );
 
     // Use STBs to count vals
     genvar i;
     generate
         for (i=0; i<NUM_INP; i=i+1) begin
-                StochToBin #(.BITSTR_LEN(2047)) stb(        // SET to 2^11-1
+                StochToBin16 stb(
                     .clk                (clk),
                     .reset              (reset),
-                    .enable             (en_stb),
+                    .enable             (enable),
                     .bit_stream         (stoch_array[i]),
                     .bin_number         (stb_out[i]),
                     .done               (done_stb_array[i])
@@ -48,7 +56,7 @@ module Max (
             count_ff <= 4'b0;
             done_ff <= 0;
         end 
-        else if (done_stb) begin
+        else if (en_ctr) begin
             if (count_ff < NUM_INP) begin
                 if (stb_out[count_ff] > max_val) begin
                     max_val <= stb_out[count_ff];
@@ -60,7 +68,6 @@ module Max (
         end
     end
 
-    assign en_stb = ~done_stb;
     assign max_ind = index_max;
     assign done = done_ff;
 

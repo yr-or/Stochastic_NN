@@ -74,6 +74,7 @@ module NN_top_synth(
         .clk                    (clk),
         .reset                  (reset),
         .input_data_bin         (input_data_bin),
+        
         .L2_res_bin             (L2_res_bin),
         .L3_res_bin             (L3_res_bin),
         .done_regen             (done_regen),

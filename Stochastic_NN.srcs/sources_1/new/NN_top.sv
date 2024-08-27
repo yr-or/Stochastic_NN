@@ -120,12 +120,22 @@ module NN_top(
         end
     endgenerate
 
-    // Get max value
-    Max max(
+    // Pulse gen for done signal
+    wire en_max;
+    PulseDet pulse(
         .clk                    (clk),
         .reset                  (reset),
-        .enable                 (~en_regen),
-        .stoch_array            (L3_out_stoch),
+        .pulse_wire             (done_STB_L3),
+        .one_detec              (en_max)
+    );
+
+    // Get max value
+    Max_int16 max(
+        .clk                    (clk),
+        .reset                  (reset),
+        .enable                 (en_max),
+        .nums                   (L3_res_bin),
+
         .max_ind                (max_ind),
         .done                   (done_max)
     );

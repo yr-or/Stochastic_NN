@@ -29,8 +29,9 @@ module StochToBin16 (
                     clk_count <= clk_count + 1;
                 end else begin
                     // reset counter to 0 and ones_count to incoming bit
-                    clk_count <= 0;
-                    ones_count <= bit_stream;
+                    // CHANGE: Commented out to not start again once overflow
+                    //clk_count <= 0;
+                    //ones_count <= bit_stream;
                 end
             end
         end

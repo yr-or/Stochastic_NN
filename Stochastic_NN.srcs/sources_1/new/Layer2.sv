@@ -78,11 +78,18 @@ module Layer2(
     /////////////////// SNGs for weights and biases //////////////////////
     // One LFSR for weights
     wire [15:0] rand_num_lfsr_wghts;
+    /*
     LFSR16_Galois lfsr_wghts(
         .clk                    (clk),
         .reset                  (reset),
         .seed                   (16'd57842),
         .parallel_out           (rand_num_lfsr_wghts)
+    );
+    */
+    // PUF RNG
+    RO_PUF_4_top rng_l2(
+        .clk                    (clk),
+        .rand_num               (rand_num_lfsr_wghts)
     );
 
     genvar i, j;

@@ -39,11 +39,18 @@ module NN_top(
     //////////////// Generate stoachastic inputs - 196 SNGs /////////////////////
     // One LFSR for all
     wire [15:0] rand_num_lfsr_inps;
+    /*
     LFSR16_Galois lfsr_inps(
         .clk                    (clk),
         .reset                  (reset),
         .seed                   (16'd25645),
         .parallel_out           (rand_num_lfsr_inps)
+    );
+    */
+    // PUF RNG
+    RO_PUF_4_top rng_inps(
+        .clk                    (clk),
+        .rand_num               (rand_num_lfsr_inps)
     );
 
     genvar i;

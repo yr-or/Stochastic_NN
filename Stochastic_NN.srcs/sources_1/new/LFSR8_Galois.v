@@ -23,7 +23,7 @@ module LFSR8_Galois(
             shift_reg[3] <= shift_reg[4] ^ shift_reg[0];
             shift_reg[2] <= shift_reg[3];
             shift_reg[1] <= shift_reg[2];
-            shift_reg[0] <= shift_reg[0];
+            shift_reg[0] <= shift_reg[1];
         end
     end
 

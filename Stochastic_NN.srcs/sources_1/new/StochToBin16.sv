@@ -10,7 +10,8 @@ module StochToBin16 (
     output done
     );
 
-    localparam BITSTR_LEN=65535;
+    localparam BITSTR_LEN = 65535;
+    // localparam BITSTR_LEN = 32767;  // 15-bit
 
     reg [15:0] ones_count = 0;
     reg [15:0] clk_count = 0;
